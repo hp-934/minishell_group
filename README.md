@@ -1,7 +1,5 @@
 # Minishell
 
-A simplified Unix shell built in C as part of the 42 curriculum.
-
 ## 🚀 Project Overview
 
 This project is about recreating a basic Bash-like shell that supports:
@@ -21,6 +19,11 @@ To ensure clean and smooth teamwork, we follow the **branch + pull request (PR)*
 - The `main` branch should always be **clean and working**.
 - No one should **push directly** to `main`.
 - All changes must come through a **Pull Request** (PR).
+
+## 🧭 Before starting any work each day:
+- [ ] `git checkout main` – switch to the main branch
+- [ ] `git pull origin main` – make sure your local main is up-to-date
+- [ ] `git checkout -b your_new_branch` – create your working branch from latest main
 
 ### 🛠️ Development Process
 
