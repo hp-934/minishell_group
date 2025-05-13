@@ -6,21 +6,21 @@
 #    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
-#    Updated: 2025/05/08 17:13:04 by yaepark          ###   ########.fr        #
+#    Updated: 2025/05/13 16:58:48 by yaepark          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror 
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 LIB = $(LIBFT) -lreadline
 
-SRC = parser.c
+SRC = parser.c utils.c
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean fclean re libft
