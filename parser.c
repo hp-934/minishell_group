@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:52:45 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:28:58 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,43 +18,6 @@ void	handle_sigquit(int sig)
 {
 	(void) sig;
 	g_signal = 1;
-}
-
-int	count_args(char *str)
-{
-	int	count;
-
-	count = 0;
-	while (*str)
-	{
-		while (ft_isspace(*str))
-			str++;
-		if (!*str)
-			break ;
-		if (*str == '\'')
-		{
-			str++;
-			while (*str && *str != '\'')
-				str++;
-			if (*str == '\'')
-				str++;
-		}
-		else if (*str == '"')
-		{
-			str++;
-			while (*str && *str != '"')
-				str++;
-			if (*str == '"')
-				str++;
-		}
-		else
-		{
-			while (*str && !ft_isspace(*str) && *str != '\'' && *str != '"')
-				str++;
-		}
-		count++;
-	}
-	return (count);
 }
 
 char	*expand_variables(char *str)
@@ -220,7 +183,6 @@ int	parser(char *str, t_cmd **commands)
 {
 	if (check_syntax(str) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
-	add_history(str);
 	(*commands)->args = tokenize_input(str);
 	if (!(*commands)->args)
 		return (EXIT_SUCCESS);
@@ -242,6 +204,7 @@ int	main(void)
 		commands = t_cmd_new_empty();
 		if (!commands)
 			return (EXIT_FAILURE);
+		add_history(str);
 		error = parser(str, &commands);
 		// if (error != EXIT_SUCCESS)
 		// {

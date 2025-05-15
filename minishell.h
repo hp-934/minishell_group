@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:56:29 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 17:45:39 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@
 # include <sys/ioctl.h>
 # include <termcap.h>
 
-#define BLANK -1
-#define ERROR_SYNTAX 1
-#define BUFFER_SIZE 100
+# define BLANK -1
+# define ERROR_SYNTAX 1
+# define BUFFER_SIZE 100
 
 typedef struct s_cmd
 {
@@ -55,11 +55,13 @@ t_cmd	*t_cmd_new_empty(void);
 void	print_char_array(char **str);
 bool	ft_isspace(char c);
 
-
 //check_sytax
-int	check_syntax(char *str);
+int		check_syntax(char *str);
 
 //write_errors
-int	write_error(int	error);
+int		write_error(int error);
+
+//count args
+int		count_args(char *str);
 
 #endif

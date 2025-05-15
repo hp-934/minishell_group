@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   write_error.c                                      :+:      :+:    :+:   */
+/*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 16:48:57 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:46:04 by yaepark          ###   ########.fr       */
+/*   Created: 2025/05/13 14:15:27 by hogu              #+#    #+#             */
+/*   Updated: 2025/05/15 16:45:59 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "exit_status.h"
 
-int	write_error(int error)
+int	set_exit_status(int code)
 {
-	int	fd;
+	static int	status;
 
-	fd = STDERR_FILENO;
-	if (error == ERROR_SYNTAX)
-		write(fd, "Syntax error: invalid character or quotes\n", 42);
-	return (EXIT_FAILURE);
+	if (code != -1)
+		status = code;
+	return (status);
+}
+
+int	get_exit_status(void)
+{
+	return (set_exit_status(-1));
 }

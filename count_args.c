@@ -1,23 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   write_error.c                                      :+:      :+:    :+:   */
+/*   count_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 16:48:57 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:46:04 by yaepark          ###   ########.fr       */
+/*   Created: 2025/05/15 17:28:50 by yaepark           #+#    #+#             */
+/*   Updated: 2025/05/15 17:43:39 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	write_error(int error)
+int	count_args(char *str)
 {
-	int	fd;
+	int		count;
+	char	quote;
 
-	fd = STDERR_FILENO;
-	if (error == ERROR_SYNTAX)
-		write(fd, "Syntax error: invalid character or quotes\n", 42);
-	return (EXIT_FAILURE);
+	count = 0;
+	while (*str)
+	{
+		while (ft_isspace(*str))
+			str++;
+		if (!*str)
+			break ;
+		count++;
+		if (*str == '\'' || *str == '"')
+		{
+			quote = *str++;
+			while (*str && *str != quote)
+				str++;
+			if (*str == quote)
+				str++;
+		}
+		else
+			while (*str && !ft_isspace(*str) && *str != '\'' && *str != '"')
+				str++;
+	}
+	return (count);
 }
