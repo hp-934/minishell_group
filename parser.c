@@ -6,15 +6,11 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:43:46 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:52:45 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-#define BLANK -1
-#define ERROR_SYNTAX 1
-#define BUFFER_SIZE 100
 
 volatile int	g_signal = 0;
 
@@ -22,39 +18,6 @@ void	handle_sigquit(int sig)
 {
 	(void) sig;
 	g_signal = 1;
-}
-
-int	check_syntax(char *str)
-{
-	int	count_single;
-	int	count_double;
-
-	count_single = 0;
-	count_double = 0;
-	while (*str)
-	{
-		if (*str == '\'')
-			count_single++;
-		else if (*str == '"')
-			count_double++;
-		if (*str == '\\' && !(count_single % 2 == 1 || count_double % 2 == 1))
-		{
-			write(2, "Syntax error: invalid character '\\'\n", 36);
-			return (ERROR_SYNTAX);
-		}
-		if (*str == ';' && !(count_single % 2 == 1 || count_double % 2 == 1))
-		{
-			write(2, "Syntax error: invalid character ';'\n", 36);
-			return (ERROR_SYNTAX);
-		}
-		str++;
-	}
-	if (count_single % 2 == 1 || count_double % 2 == 1)
-	{
-		write(2, "Syntax error: incorrect quotes\n", 31);
-		return (ERROR_SYNTAX);
-	}
-	return (EXIT_SUCCESS);
 }
 
 int	count_args(char *str)
@@ -256,7 +219,7 @@ char	**tokenize_input(char *str)
 int	parser(char *str, t_cmd **commands)
 {
 	if (check_syntax(str) != EXIT_SUCCESS)
-		return (ERROR_SYNTAX);
+		return (EXIT_FAILURE);
 	add_history(str);
 	(*commands)->args = tokenize_input(str);
 	if (!(*commands)->args)
@@ -280,7 +243,7 @@ int	main(void)
 		if (!commands)
 			return (EXIT_FAILURE);
 		error = parser(str, &commands);
-		// if (!error)
+		// if (error != EXIT_SUCCESS)
 		// {
 			// error handling
 		// }

@@ -6,7 +6,7 @@
 #    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
-#    Updated: 2025/05/15 13:25:43 by yaepark          ###   ########.fr        #
+#    Updated: 2025/05/15 16:51:19 by yaepark          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 LIB = $(LIBFT) -lreadline
 
-SRC = parser.c utils.c
+SRC = parser.c utils.c check_syntax.c write_error.c
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean fclean re libft

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:23:44 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:56:29 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@
 # include <sys/ioctl.h>
 # include <termcap.h>
 
+#define BLANK -1
+#define ERROR_SYNTAX 1
+#define BUFFER_SIZE 100
+
 typedef struct s_cmd
 {
 	char			**args; // command/options/arguments e.g.{"ls", "-l", NULL}
@@ -44,11 +48,18 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }				t_cmd;
 
-//utils.c
+//utils
 void	free_arrays(void **array);
 void	clear_t_cmd(t_cmd **command);
 t_cmd	*t_cmd_new_empty(void);
 void	print_char_array(char **str);
 bool	ft_isspace(char c);
+
+
+//check_sytax
+int	check_syntax(char *str);
+
+//write_errors
+int	write_error(int	error);
 
 #endif
