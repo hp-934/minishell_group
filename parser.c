@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:18:52 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:43:46 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ int	count_args(char *str)
 		}
 		count++;
 	}
-	// printf("count= %d\n", count);
 	return (count);
 }
 
@@ -173,7 +172,7 @@ char	*expand_variables(char *str)
 		if (unlink("var.txt") != 0)
 			perror("Unlink failed");
 		if (str)
-				free(str);
+			free(str);
 		return (NULL);
 	}
 	close(fd);
@@ -187,7 +186,6 @@ char	*expand_variables(char *str)
 
 char	**tokenize_input(char *str)
 {
-
 	char	**args;
 	char	*start;
 	char	*end;
@@ -257,7 +255,7 @@ char	**tokenize_input(char *str)
 
 int	parser(char *str, t_cmd **commands)
 {
-	if (check_syntax(str ) != EXIT_SUCCESS)
+	if (check_syntax(str) != EXIT_SUCCESS)
 		return (ERROR_SYNTAX);
 	add_history(str);
 	(*commands)->args = tokenize_input(str);
@@ -284,7 +282,7 @@ int	main(void)
 		error = parser(str, &commands);
 		// if (!error)
 		// {
-			 // error handling
+			// error handling
 		// }
 		if (commands)
 			clear_t_cmd(&commands);

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 12:48:00 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:24:09 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	clear_t_cmd(t_cmd **command)
 	*command = NULL;
 }
 
-t_cmd	*t_cmd_new_empty()
+t_cmd	*t_cmd_new_empty(void)
 {
 	t_cmd	*new;
 
@@ -67,7 +67,7 @@ void	print_char_array(char **str)
 	}
 }
 
-bool ft_isspace(char c)
+bool	ft_isspace(char c)
 {
 	if (c == 32 || (c >= 9 && c <= 13))
 		return (true);
