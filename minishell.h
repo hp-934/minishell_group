@@ -6,19 +6,16 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/13 14:53:16 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 12:48:09 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define false 0
-# define true 1
-
-
-
 # include "libft/libft.h"
+
+# include <stdbool.h>
 
 # include <stdio.h>
 #include <string.h>
@@ -52,6 +49,6 @@ void	free_arrays(void **array);
 void	clear_t_cmd(t_cmd **command);
 t_cmd	*t_cmd_new_empty();
 void	print_char_array(char **str);
-int		ft_isspace(char c);
+bool	ft_isspace(char c);
 
 #endif

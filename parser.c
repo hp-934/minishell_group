@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/13 18:00:15 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/15 16:18:52 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 #define BLANK -1
 #define ERROR_SYNTAX 1
+#define BUFFER_SIZE 100
+
 volatile int	g_signal = 0;
-
-
 
 void	handle_sigquit(int sig)
 {
@@ -37,12 +37,12 @@ int	check_syntax(char *str)
 			count_single++;
 		else if (*str == '"')
 			count_double++;
-		if (*str == '\\' && !(count_single %2 == 1 || count_double %2 == 1))
+		if (*str == '\\' && !(count_single % 2 == 1 || count_double % 2 == 1))
 		{
 			write(2, "Syntax error: invalid character '\\'\n", 36);
 			return (ERROR_SYNTAX);
 		}
-		if (*str == ';' && !(count_single %2 == 1 || count_double %2 == 1))
+		if (*str == ';' && !(count_single % 2 == 1 || count_double % 2 == 1))
 		{
 			write(2, "Syntax error: invalid character ';'\n", 36);
 			return (ERROR_SYNTAX);
@@ -67,7 +67,7 @@ int	count_args(char *str)
 		while (ft_isspace(*str))
 			str++;
 		if (!*str)
-			break;
+			break ;
 		if (*str == '\'')
 		{
 			str++;
@@ -91,46 +91,96 @@ int	count_args(char *str)
 		}
 		count++;
 	}
-	printf("count= %d\n", count);
+	// printf("count= %d\n", count);
 	return (count);
 }
 
 char	*expand_variables(char *str)
 {
 	char	*value;
-	char	*start;
-	char	*end;
-	int		count;
+	char	*tmp;
+	int		start;
+	int		i;
+	int		fd;
+	ssize_t	size;
+	char	buffer[BUFFER_SIZE];
 
-	start = str;
-	while (start)
+	i = 0;
+	if (!ft_strchr(str, '$'))
+		return (str);
+	fd = open("var.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
 	{
-		start = ft_strchr(start, '$');
-		if (start)
+		perror("Error: Open");
+		free(str);
+		return (NULL);
+	}
+	while (str[i])
+	{
+		if (str[i] == '$')
 		{
-			start++;
-			count = count_args(start);
-			if (count == 1)
+			start = ++i;
+			if (str[start] == '?')
 			{
-				value = getenv(start);
-				if (!value)
-					return (NULL);
+				//call function to grab the last command's exit status
+				ft_putstr_fd("$?", fd);
+				i++;
+				continue ;
+			}
+			while (str[i] && !ft_isspace(str[i]) && str[i] != '$')
+				i++;
+			tmp = ft_substr(str, start, i - start);
+			value = getenv(tmp);
+			free(tmp);
+			if (!value)
+			{
+				write(2, "Syntax error: invalid variable\n", 31);
 				free(str);
-				str = ft_strdup(value);
-				return (str);
+				return (NULL);
 			}
-			else /// need to handle variable expansion within quotes ("    $HOME   " "$HOME ")
-			{
-				start++;
-				end = start;
-				while (*end &&!ft_isspace(*end))
-					end++;
-				value = expand_variables(ft_substr(start, 0, end - start));
-				if (!value)
-					return (NULL);
-			}
-		start++;
+			ft_putstr_fd(value, fd);
 		}
+		else
+			ft_putchar_fd(str[i++], fd);
+	}
+	free(str);
+	str = NULL;
+	close(fd);
+	fd = open("var.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Error: Open");
+		return (NULL);
+	}
+	size = read(fd, buffer, BUFFER_SIZE - 1);
+	while (size > 0)
+	{
+		buffer[size] = '\0';
+		if (!str)
+			str = ft_strdup(buffer);
+		else
+		{
+			tmp = ft_strjoin(str, buffer);
+			free(str);
+			str = tmp;
+		}
+		size = read(fd, buffer, BUFFER_SIZE - 1);
+	}
+	if (size == -1)
+	{
+		perror("Error: read");
+		close(fd);
+		if (unlink("var.txt") != 0)
+			perror("Unlink failed");
+		if (str)
+				free(str);
+		return (NULL);
+	}
+	close(fd);
+	if (unlink("var.txt") != 0)
+	{
+		perror("Unlink failed");
+		return (NULL);
 	}
 	return (str);
 }
@@ -152,15 +202,15 @@ char	**tokenize_input(char *str)
 	}
 	args = malloc((count + 1) * sizeof(char *));
 	if (!args)
-		return(NULL);
+		return (NULL);
 	start = str;
 	i = 0;
 	while (i < count)
 	{
 		while (ft_isspace(*start))
 			start++;
-		if(!*start)
-			break;
+		if (!*start)
+			break ;
 		if (*start == '\'')
 		{
 			start++;
@@ -175,6 +225,12 @@ char	**tokenize_input(char *str)
 			args[i] = ft_substr(start, 0, end - start);
 			start = end + 1;
 			args[i] = expand_variables(args[i]);
+			if (!args[i])
+			{
+				free_arrays((void **)args);
+				free(str);
+				return (NULL);
+			}
 		}
 		else
 		{
@@ -184,6 +240,12 @@ char	**tokenize_input(char *str)
 			args[i] = ft_substr(start, 0, end - start);
 			start = end;
 			args[i] = expand_variables(args[i]);
+			if (!args[i])
+			{
+				free_arrays((void **)args);
+				free(str);
+				return (NULL);
+			}
 		}
 		i++;
 	}
@@ -199,6 +261,8 @@ int	parser(char *str, t_cmd **commands)
 		return (ERROR_SYNTAX);
 	add_history(str);
 	(*commands)->args = tokenize_input(str);
+	if (!(*commands)->args)
+		return (EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
 }
 
@@ -213,11 +277,15 @@ int	main(void)
 	{
 		str = readline(">");
 		if (!str)
-			break;
+			break ;
 		commands = t_cmd_new_empty();
 		if (!commands)
 			return (EXIT_FAILURE);
 		error = parser(str, &commands);
+		// if (!error)
+		// {
+			 // error handling
+		// }
 		if (commands)
 			clear_t_cmd(&commands);
 	}

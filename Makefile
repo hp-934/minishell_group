@@ -6,14 +6,14 @@
 #    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
-#    Updated: 2025/05/13 16:58:48 by yaepark          ###   ########.fr        #
+#    Updated: 2025/05/15 13:25:43 by yaepark          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
