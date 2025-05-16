@@ -16,9 +16,10 @@ t_cmd *make_test_cmds(void)
 	cmd1->args = malloc(sizeof(char *) * 4);
 	cmd1->args[0] = strdup("echo");
 	cmd1->args[1] = strdup("-n");
-	cmd1->args[2] = strdup("a");
-	cmd1->args[3] = NULL;
-	cmd1->input_fd = -1;
+	cmd1->args[2] = strdup("aaaa");
+	cmd1->args[3] = strdup("bb");
+	cmd1->args[4] = NULL;
+	cmd1->input_fd = open("in.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	cmd1->output_fd = -1;
 	cmd1->is_builtin = 0;
 	cmd1->next = cmd2;
@@ -60,7 +61,10 @@ void	print_structs(t_cmd *cmd)
 			j++;
 		}
 		printf("path: %s\n", cmd->path);
-		printf("is_buitlin: %d\n\n", cmd->is_builtin);
+		printf("is_buitlin: %d\n", cmd->is_builtin);
+		printf("input_fd: %d\n", cmd->input_fd);
+		printf("output_fd: %d\n\n", cmd->output_fd);
+
 		cmd = cmd->next;
 		i++;
 	}
@@ -70,6 +74,7 @@ int main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
+	(void)envp;
 	t_cmd *cmd_list = make_test_cmds();
 	t_cmd *tmp = cmd_list;
 	while (tmp)

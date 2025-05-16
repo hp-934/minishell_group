@@ -15,6 +15,7 @@
 
 void	child(t_cmd *cmd, int *prev_pipe_out, char **envp, int *pipefd)
 {
+
 	if (cmd->input_fd != -1)
 	{
 		dup2(cmd->input_fd, STDIN_FILENO);
@@ -36,11 +37,12 @@ void	child(t_cmd *cmd, int *prev_pipe_out, char **envp, int *pipefd)
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	// fprintf(stderr, "running: %s\n", cmd->path);
-	// for (int i = 0; cmd->args && cmd->args[i]; i++)
-	// 	fprintf(stderr, "arg[%d]: %s\n", i, cmd->args[i]);
+
 	if (cmd->is_builtin)
+	{
 		run_builtin(cmd);
+		exit(0);
+	}
 	else
 	{
 		execve(cmd->path, cmd->args, envp);
@@ -91,7 +93,9 @@ int is_strict_builtin(t_cmd *cmd)
 void	run_all_cmd(t_cmd *cmd, int *prev_pipe_out, char **envp)
 {
 	if (!has_pipe(cmd) && is_strict_builtin(cmd))
+	{
 		run_builtin(cmd);
+	}
 	else
 	{
 		while (cmd)

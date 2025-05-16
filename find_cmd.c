@@ -110,5 +110,4 @@ void	find_path(t_cmd *cmd, char **envp)
 	}
 	else
 			cmd->path = search_path(command, envp);
-	}
 }

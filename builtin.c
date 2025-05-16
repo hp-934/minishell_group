@@ -36,12 +36,11 @@ void	echo_builtin(t_cmd *cmd)
 	int	i;
 
 	i = 2;
-
 	while (cmd->args[i + 1])
 	{
-		ft_putstr_fd(cmd->args[i], cmd->output_fd);
-		ft_putchar_fd(' ', cmd->output_fd);
+		ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
+		ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
-	ft_putstr_fd(cmd->args[i], cmd->output_fd);
+	ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
 }
