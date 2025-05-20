@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/16 15:36:03 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:46:38 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@
 
 # define BLANK -1
 # define ERROR_SYNTAX 1
+# define ERROR_VAR 2
 # define BUFFER_SIZE 100
+
+
 
 
 typedef enum e_builtin_type

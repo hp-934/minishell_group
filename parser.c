@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/20 18:31:51 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:59:54 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,7 @@ char	*expand_variables(char *str)
 		return (str);
 	fd = open("var.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
-	{
-		perror("Error: Open");
-		free(str);
-		return (NULL);
-	}
+		return (perror("Error: Open"), free(str), NULL);
 	while (str[i])
 	{
 		if (str[i] == '$')
@@ -61,11 +57,7 @@ char	*expand_variables(char *str)
 			value = getenv(tmp);
 			free(tmp);
 			if (!value)
-			{
-				write(2, "Syntax error: invalid variable\n", 31);
-				free(str);
-				return (NULL);
-			}
+				return (write_error(ERROR_VAR), free(str), NULL);
 			ft_putstr_fd(value, fd);
 		}
 		else
@@ -106,10 +98,7 @@ char	*expand_variables(char *str)
 	}
 	close(fd);
 	if (unlink("var.txt") != 0)
-	{
-		perror("Unlink failed");
-		return (NULL);
-	}
+		return (perror("Unlink failed"), NULL);
 	return (str);
 }
 
@@ -153,11 +142,7 @@ char	**tokenize_input(char *str)
 			start = end + 1;
 			args[i] = expand_variables(args[i]);
 			if (!args[i])
-			{
-				free_arrays((void **)args);
-				free(str);
-				return (NULL);
-			}
+				return (free_arrays((void **)args), free(str), NULL);
 		}
 		else
 		{
@@ -182,21 +167,17 @@ char	**tokenize_input(char *str)
 	return (args);
 }
 
-int	parser(char *str, t_cmd **commands)
+void	parser(char *str, t_cmd **commands)
 {
 	if (check_syntax(str) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
+		return ;
 	(*commands)->args = tokenize_input(str);
-	if (!(*commands)->args)
-		return (EXIT_SUCCESS);
-	return (EXIT_SUCCESS);
 }
 
 int	main(void)
 {
 	char	*str;
 	t_cmd	*commands;
-	//int		error;
 
 	signal(SIGQUIT, handle_sigquit);
 	while (g_signal == 0)
@@ -209,11 +190,6 @@ int	main(void)
 			return (EXIT_FAILURE);
 		add_history(str);
 		parser(str, &commands);
-		//error = parser(str, &commands);
-		// if (error != EXIT_SUCCESS)
-		// {
-			// error handling
-		// }
 		if (commands)
 			clear_t_cmd(&commands);
 	}

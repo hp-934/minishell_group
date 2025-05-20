@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:48:57 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:46:04 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:45:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	write_error(int error)
 
 	fd = STDERR_FILENO;
 	if (error == ERROR_SYNTAX)
-		write(fd, "Syntax error: invalid character or quotes\n", 42);
+		write(fd, "Invalid character or quotes\n", 28);
+	if (error == ERROR_VAR)
+		write(fd, "Invalid variable\n", 17);
 	return (EXIT_FAILURE);
 }
