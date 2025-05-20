@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:28:58 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:31:51 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,11 @@ char	*expand_variables(char *str)
 			start = ++i;
 			if (str[start] == '?')
 			{
-				//call function to grab the last command's exit status
-				ft_putstr_fd("$?", fd);
+				//tmp = ft_itoa(get_exit_status());
+				//if (!tmp)
+				//	return (free(str), close(fd), NULL);
+				//ft_putstr_fd(tmp, fd);
+				//free(tmp);
 				i++;
 				continue ;
 			}
@@ -193,7 +196,7 @@ int	main(void)
 {
 	char	*str;
 	t_cmd	*commands;
-	int		error;
+	//int		error;
 
 	signal(SIGQUIT, handle_sigquit);
 	while (g_signal == 0)
@@ -205,7 +208,8 @@ int	main(void)
 		if (!commands)
 			return (EXIT_FAILURE);
 		add_history(str);
-		error = parser(str, &commands);
+		parser(str, &commands);
+		//error = parser(str, &commands);
 		// if (error != EXIT_SUCCESS)
 		// {
 			// error handling

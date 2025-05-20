@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:45:39 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/16 15:36:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,24 @@
 # define ERROR_SYNTAX 1
 # define BUFFER_SIZE 100
 
+
+typedef enum e_builtin_type
+{
+	NON_BUILTIN = 0,
+	BUILTIN_ECHO,
+	BUILTIN_CD,
+	BUILTIN_PWD,
+	BUILTIN_EXPORT,
+	BUILTIN_UNSET,
+	BUILTIN_ENV,
+	BUILTIN_EXIT
+}	t_builtin_type;
+
 typedef struct s_cmd
 {
 	char			**args; // command/options/arguments e.g.{"ls", "-l", NULL}
 	char			*path; // path for command
-	int				is_buildin; // whether or not a builtin cmd (e.g. cd, echo)
+	int				is_builtin; // whether or not a builtin cmd (e.g. cd, echo)
 	int				input_fd; // set to -1 if not exist
 	int				output_fd; // set to -1 if not exist
 	int				pid; // ignore this in parser

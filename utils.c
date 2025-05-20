@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 16:24:09 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/16 15:36:30 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,21 @@ void	clear_t_cmd(t_cmd **command)
 	*command = NULL;
 }
 
+
 t_cmd	*t_cmd_new_empty(void)
 {
 	t_cmd	*new;
 
 	new = malloc(sizeof(t_cmd));
+	if (!new)
+		return (NULL);
 	new->args = NULL;
 	new->path = NULL;
 	new->next = NULL;
+	new->is_builtin = NON_BUILTIN; // is basically 0; e_num set in minishell.h
+	new->input_fd = -1;
+	new->output_fd = -1;
+	new->pid = -1;
 	return (new);
 }
 
