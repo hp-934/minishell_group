@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 17:28:50 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/15 17:43:39 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/21 11:48:10 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,18 @@ int	count_args(char *str)
 		if (!*str)
 			break ;
 		count++;
-		if (*str == '\'' || *str == '"')
+		while (*str && !ft_isspace(*str))
 		{
-			quote = *str++;
-			while (*str && *str != quote)
+			if (*str == '\'' || *str == '"')
+			{
+				quote = *str;
 				str++;
-			if (*str == quote)
-				str++;
+				str = ft_strchr(str, quote);
+				if (!*str)
+					break;
+			}
+			str++;
 		}
-		else
-			while (*str && !ft_isspace(*str) && *str != '\'' && *str != '"')
-				str++;
 	}
 	return (count);
 }

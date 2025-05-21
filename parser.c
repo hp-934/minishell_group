@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/20 18:59:54 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/21 12:27:10 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_sigquit(int sig)
 	g_signal = 1;
 }
 
-char	*expand_variables(char *str)
+char	*remove_quotes_expand_variables(char *str)
 {
 	char	*value;
 	char	*tmp;
@@ -29,16 +29,62 @@ char	*expand_variables(char *str)
 	int		fd;
 	ssize_t	size;
 	char	buffer[BUFFER_SIZE];
+	char	quote;
 
 	i = 0;
-	if (!ft_strchr(str, '$'))
+	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
 		return (str);
 	fd = open("var.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		return (perror("Error: Open"), free(str), NULL);
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '\'')
+		{
+			quote = str[i];
+			i++;
+			while (str[i] && str[i] != quote)
+				ft_putchar_fd(str[i++], fd);
+			if (str[i] == quote)
+				i++;
+		}
+		else if (str[i] == '"')
+		{
+			quote = str[i];
+				i++;
+			while (str[i] && str[i] != quote)
+			{
+				if (str[i] == '$')
+				{
+					start = ++i;
+					if (str[start] == '?')
+					{
+						//tmp = ft_itoa(get_exit_status());
+						//if (!tmp)
+						//	return (free(str), close(fd), NULL);
+						//ft_putstr_fd(tmp, fd);
+						//free(tmp);
+						i++;
+						continue ;
+					}
+					while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != quote)
+						i++;
+					tmp = ft_substr(str, start, i - start);
+					value = getenv(tmp);
+					free(tmp);
+					if (!value)
+						return (write_error(ERROR_VAR), free(str), NULL);
+					ft_putstr_fd(value, fd);
+					if (str[i] == quote)
+					{
+						i++;
+						break;
+					}
+				}
+				ft_putchar_fd(str[i++], fd);
+			}
+		}
+		else if (str[i] == '$')
 		{
 			start = ++i;
 			if (str[start] == '?')
@@ -51,7 +97,7 @@ char	*expand_variables(char *str)
 				i++;
 				continue ;
 			}
-			while (str[i] && !ft_isspace(str[i]) && str[i] != '$')
+			while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"' && str[i] !='\'')
 				i++;
 			tmp = ft_substr(str, start, i - start);
 			value = getenv(tmp);
@@ -109,6 +155,7 @@ char	**tokenize_input(char *str)
 	char	*end;
 	int		count;
 	int		i;
+	char	quote;
 
 	count = count_args(str);
 	if (!count)
@@ -127,39 +174,55 @@ char	**tokenize_input(char *str)
 			start++;
 		if (!*start)
 			break ;
-		if (*start == '\'')
+		end = start;
+		while (*end && !ft_isspace(*end))
 		{
-			start++;
-			end = ft_strchr(start, '\'');
-			args[i] = ft_substr(start, 0, end - start);
-			start = end + 1;
-		}
-		else if (*start == '"')
-		{
-			start++;
-			end = ft_strchr(start, '"');
-			args[i] = ft_substr(start, 0, end - start);
-			start = end + 1;
-			args[i] = expand_variables(args[i]);
-			if (!args[i])
-				return (free_arrays((void **)args), free(str), NULL);
-		}
-		else
-		{
-			end = start;
-			while (*end && !ft_isspace(*end) && *end != '\'' && *end != '"')
-				end++;
-			args[i] = ft_substr(start, 0, end - start);
-			start = end;
-			args[i] = expand_variables(args[i]);
-			if (!args[i])
+			if (*end == '\'' || *end == '"')
 			{
-				free_arrays((void **)args);
-				free(str);
-				return (NULL);
+				quote = *end;
+				end++;
+				end = ft_strchr(end, quote);
 			}
+			end++;
 		}
+		args[i] = ft_substr(start, 0, end - start);
+		start = end++;
+		args[i] = remove_quotes_expand_variables(args[i]);
+		if (!args[i])
+			return (free_arrays((void **)args), free(str), NULL);
 		i++;
+		//if (*start == '\'')
+		//{
+		//	start++;
+		//	end = ft_strchr(start, '\'');
+		//	args[i] = ft_substr(start, 0, end - start);
+		//	start = end + 1;
+		//}
+		//else if (*start == '"')
+		//{
+		//	start++;
+		//	end = ft_strchr(start, '"');
+		//	args[i] = ft_substr(start, 0, end - start);
+		//	start = end + 1;
+		//	args[i] = expand_variables(args[i]);
+		//	if (!args[i])
+		//		return (free_arrays((void **)args), free(str), NULL);
+		//}
+		//else
+		//{
+		//	end = start;
+		//	while (*end && !ft_isspace(*end) && *end != '\'' && *end != '"')
+		//		end++;
+		//	args[i] = ft_substr(start, 0, end - start);
+		//	start = end;
+		//	args[i] = expand_variables(args[i]);
+		//	if (!args[i])
+		//	{
+		//		free_arrays((void **)args);
+		//		free(str);
+		//		return (NULL);
+		//	}
+		//}
 	}
 	args[i] = NULL;
 	print_char_array(args);
