@@ -1,41 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_commands.c                                   :+:      :+:    :+:   */
+/*   spaces.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 17:28:50 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:18:54 by yaepark          ###   ########.fr       */
+/*   Created: 2025/05/22 17:00:29 by yaepark           #+#    #+#             */
+/*   Updated: 2025/05/22 17:00:54 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	count_commands(char *str)
+char	*skip_spaces(char *str)
 {
-	int		count;
-	char	quote;
+	while (*str && ft_isspace(*str))
+		str++;
+	return (str);
+}
 
-	count = 1;
-	while (*str)
-	{
-		if (*str == '\'' || *str == '"')
-		{
-			quote = *str;
-			str++;
-			while (*str && *str != quote)
-				str++;
-			if (*str == quote)
-				str++;
-		}
-		else if (*str == '|')
-		{
-			count++;
-			str++;
-		}
-		else
-			str++;
-	}
-	return (count);
+bool	ft_isspace(char c)
+{
+	if (c == 32 || (c >= 9 && c <= 13))
+		return (true);
+	else
+		return (false);
 }

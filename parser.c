@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 16:14:22 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 17:18:11 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,8 +301,6 @@ int	main(void)
 		if (commands)
 			clear_t_cmd(&commands);
 	}
-	if (commands)
-		clear_t_cmd(&commands);
 	rl_clear_history();
 	return (0);
 }

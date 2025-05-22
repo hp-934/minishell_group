@@ -26,13 +26,14 @@ echo "hello
 | ls
 ls |
 ls || echo hi
-echo hello | wc                # valid
+ls | | grep                    # invalid
 | echo hello                   # invalid
 echo hello || wc               # invalid
+echo hello | wc                # valid
 echo "hello | world" | wc      # valid
 echo '|'                       # valid
 cat << EOF | wc                # valid
-ls | | grep                    # invalid
+
 
 //quotes with pipes
 echo "this | is not a pipe"

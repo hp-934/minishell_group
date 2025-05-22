@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 15:39:54 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 17:20:02 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	clear_t_cmd(t_cmd **command)
 	*command = NULL;
 }
 
-
 t_cmd	*t_cmd_new_empty(void)
 {
 	t_cmd	*new;
@@ -57,7 +56,7 @@ t_cmd	*t_cmd_new_empty(void)
 	new->args = NULL;
 	new->path = NULL;
 	new->next = NULL;
-	new->is_builtin = NON_BUILTIN; // is basically 0; e_num set in minishell.h
+	new->is_builtin = NON_BUILTIN;
 	new->input_fd = -1;
 	new->output_fd = -1;
 	new->pid = -1;
@@ -78,12 +77,4 @@ void	print_char_array(char **str)
 	}
 	count++;
 	printf("---\n");
-}
-
-bool	ft_isspace(char c)
-{
-	if (c == 32 || (c >= 9 && c <= 13))
-		return (true);
-	else
-		return (false);
 }

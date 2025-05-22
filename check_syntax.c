@@ -6,13 +6,13 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 16:41:50 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 17:00:01 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int check_quotes(char *str)
+int	check_quotes(char *str)
 {
 	bool	start_single;
 	bool	start_double;
@@ -39,29 +39,24 @@ int check_quotes(char *str)
 
 int	check_pipes(char *str)
 {
-
 	char	quote;
 
-	while (*str && ft_isspace(*str))
-		str++;
+	str = skip_spaces(str);
 	if (*str == '|')
 		return (write_error(ERROR_PIPES));
 	while (*str)
 	{
 		if (*str == '\'' || *str == '"')
 		{
-			quote = *str;
-			str++;
-			while (*str && *str != quote)
-				str++;
+			quote = *str++;
+			str = skip_spaces(str);
 			if (*str == quote)
 				str++;
 		}
 		else if (*str == '|')
 		{
 			str++;
-			while (*str && ft_isspace(*str))
-				str++;
+			str = skip_spaces(str);
 			if (!*str || *str == '|')
 				return (write_error(ERROR_PIPES));
 		}
