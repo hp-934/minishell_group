@@ -15,39 +15,27 @@
 
 void	child(t_cmd *cmd, int *prev_pipe_out, char **envp, int *pipefd)
 {
-
 	if (cmd->input_fd != -1)
-	{
-		dup2(cmd->input_fd, STDIN_FILENO);
-		close(cmd->input_fd);
-	}
+		dup2_and_close(cmd->input_fd, STDIN_FILENO);
 	if (*prev_pipe_out != -1)
-	{
-		dup2(*prev_pipe_out, STDIN_FILENO);
-		close(*prev_pipe_out);
-	}
+		dup2_and_close(*prev_pipe_out, STDIN_FILENO);
 	if (cmd->output_fd != -1)
-	{
-		dup2(cmd->output_fd, STDOUT_FILENO);
-		close(cmd->output_fd);
-	}
+		dup2_and_close(cmd->output_fd, STDOUT_FILENO);
 	else if (cmd->next)
 	{
-		dup2(pipefd[1], STDOUT_FILENO);
+		dup2_and_close(pipefd[1], STDOUT_FILENO);
 		close(pipefd[0]);
-		close(pipefd[1]);
 	}
-
 	if (cmd->is_builtin)
 	{
-		run_builtin(cmd);
-		exit(0);
+		run_builtin(cmd, envp);
+		exit(get_exit_status());
 	}
 	else
 	{
 		execve(cmd->path, cmd->args, envp);
 		perror("execve failed");
-		exit (1);
+		exit(1);
 	}
 }
 
@@ -56,6 +44,8 @@ int	run_single_cmd(t_cmd *cmd, int *prev_pipe_out, char **envp)
 	int		pipefd[2];
 	pid_t	pid;
 
+	if (is_strict_builtin(cmd->is_builtin))
+		return (-1);
 	if (!cmd->path || !ft_strcmp(cmd->path, "-1"))
 		return (print_cmd_error(cmd), -1);
 	if (cmd->next && pipe(pipefd) == -1)
@@ -77,25 +67,10 @@ int	run_single_cmd(t_cmd *cmd, int *prev_pipe_out, char **envp)
 	return (pid);
 }
 
-int	has_pipe(t_cmd *cmd)
-{
-	return (cmd && cmd->next);
-}
-
-int is_strict_builtin(t_cmd *cmd)
-{
-	return (cmd->is_builtin == BUILTIN_CD
-			|| cmd->is_builtin == BUILTIN_EXIT
-			|| cmd->is_builtin == BUILTIN_EXPORT
-			|| cmd->is_builtin == BUILTIN_UNSET);
-}
-
 void	run_all_cmd(t_cmd *cmd, int *prev_pipe_out, char **envp)
 {
-	if (!has_pipe(cmd) && is_strict_builtin(cmd))
-	{
-		run_builtin(cmd);
-	}
+	if (!has_pipe(cmd) && is_strict_builtin(cmd->is_builtin))
+		run_builtin(cmd, envp);
 	else
 	{
 		while (cmd)
@@ -114,7 +89,7 @@ void	wait_and_exit(t_cmd *cmd)
 	last_exit = 0;
 	while (cmd)
 	{
-		if (!cmd->is_builtin)
+		if (cmd->pid > 0)
 		{
 			waitpid(cmd->pid, &status, 0);
 			if (WIFEXITED(status))

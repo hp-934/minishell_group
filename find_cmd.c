@@ -17,7 +17,7 @@ int	check_builtin(char **args)
 {
 	if (!ft_strcmp(args[0], "echo") && args[1] && !ft_strcmp(args[1], "-n"))
 		return (BUILTIN_ECHO);
-	if (!ft_strcmp(args[0], "cd") && args[1] && args[2] == NULL)
+	if (!ft_strcmp(args[0], "cd"))
 		return (BUILTIN_CD);
 	if (!ft_strcmp(args[0], "pwd") && args[1] == NULL)
 		return (BUILTIN_PWD);
@@ -108,6 +108,6 @@ void	find_path(t_cmd *cmd, char **envp)
 		else
 			cmd->path = "-1";
 	}
-	else
-			cmd->path = search_path(command, envp);
+	else if (!is_strict_builtin(cmd->is_builtin))
+		cmd->path = search_path(command, envp);
 }

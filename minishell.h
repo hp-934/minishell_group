@@ -24,11 +24,11 @@
 
 extern volatile sig_atomic_t	g_signal_received;
 
-typedef struct	s_cmd
+typedef struct s_cmd
 {
-	char			**args;	// command, options, arguments e.g.{"ls", "-l", NULL}
-	char 			*path;	// path for command
-	int				is_builtin; // whether or not a buildin cmd (e.g. cd, echo)
+	char			**args;
+	char			*path;
+	int				is_builtin;
 	int				pid;
 	int				input_fd;
 	int				output_fd;
@@ -47,15 +47,31 @@ typedef enum e_builtin_type
 	BUILTIN_EXIT
 }	t_builtin_type;
 
-void	signal_handler(int sig);
 void	input_loop(void);
-void	execute(t_cmd *cmd, char **envp);
-int	ft_strcmp(char *s1, char *s2);
+
+//signal
+void	signal_handler(int sig);
+
+//find_cmd
 void	find_path(t_cmd *cmd, char **envp);
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
-void	run_builtin(t_cmd *cmd);
+
+//execute
+void	execute(t_cmd *cmd, char **envp);
+void	dup2_and_close(int fd1, int fd2);
+
+//builtin
+void	run_builtin(t_cmd *cmd, char **envp);
 void	echo_builtin(t_cmd *cmd);
+void	pwd_builtin(void);
+void	env_builtin(char **envp);
+void	cd_builtin(t_cmd *cmd);
+
+//print_error
 void	print_cmd_error(t_cmd *cmd);
 
+//util
+int		ft_strcmp(char *s1, char *s2);
+int		has_pipe(t_cmd *cmd);
+int		is_strict_builtin(int is_strict_builtin);
 
 #endif

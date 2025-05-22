@@ -10,6 +10,7 @@ LIB = $(LIBFT) -lreadline
 
 SRC = test_executor.c \
 		builtin.c \
+		builtin_strict.c \
 		execute.c \
 		exit_status.c \
 		find_cmd.c \
@@ -23,23 +24,23 @@ OBJ = $(SRC:.c=.o)
 all: libft $(NAME)
 
 libft:
-	$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIB)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIB)
 	@echo "<$(NAME)> is available."
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(LIBFT_DIR) clean
 	@rm -f $(OBJ)
 	@echo "Removed $(NAME) object files."
 
 fclean: clean
-	$(MAKE) -C $(LIBFT_DIR) fclean
-	rm -f $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@rm -f $(NAME)
 	@echo "Removed $(NAME)."
 
 re: fclean all
