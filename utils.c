@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/16 15:36:30 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:39:54 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ void	clear_t_cmd(t_cmd **command)
 	while (*command)
 	{
 		temp = (*command)->next;
-		free_arrays((void **)(*command)->args);
+		if ((*command)->args)
+			free_arrays((void **)(*command)->args);
 		if ((*command)->path)
 			free((*command)->path);
 		free(*command);
@@ -65,13 +66,18 @@ t_cmd	*t_cmd_new_empty(void)
 
 void	print_char_array(char **str)
 {
+	static int	count = 1;
+
 	if (!str)
 		return ;
+	printf("command %d\n", count);
 	while (*str)
 	{
 		printf("%s\n", *str);
 		str++;
 	}
+	count++;
+	printf("---\n");
 }
 
 bool	ft_isspace(char c)

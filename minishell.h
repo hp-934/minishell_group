@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/20 18:46:38 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:24:18 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+
+# include "exit_status.h"
 
 # include <stdbool.h>
 
@@ -36,10 +38,8 @@
 # define BLANK -1
 # define ERROR_SYNTAX 1
 # define ERROR_VAR 2
+# define ERROR_PIPES 3
 # define BUFFER_SIZE 100
-
-
-
 
 typedef enum e_builtin_type
 {
@@ -77,7 +77,8 @@ int		check_syntax(char *str);
 //write_errors
 int		write_error(int error);
 
-//count args
+//counting
 int		count_args(char *str);
+int		count_commands (char *str);
 
 #endif

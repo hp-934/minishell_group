@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/21 12:27:10 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 16:14:22 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,38 @@ void	handle_sigquit(int sig)
 	g_signal = 1;
 }
 
+int	put_variable(char *str, int fd, int i)
+{
+	int		start;
+	char	*tmp;
+	char	*value;
+
+	start = ++i;
+	if (str[start] == '?')
+	{
+		tmp = ft_itoa(get_exit_status());
+		if (!tmp)
+			return (0);
+		ft_putstr_fd(tmp, fd);
+		free(tmp);
+		i++;
+		return (i);
+	}
+	while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"' && str[i] !='\'')
+		i++;
+	tmp = ft_substr(str, start, i - start);
+	value = getenv(tmp);
+	free(tmp);
+	if (!value)
+		return (write_error(ERROR_VAR), 0);
+	ft_putstr_fd(value, fd);
+	return (i);
+}
+
 char	*remove_quotes_expand_variables(char *str)
 {
-	char	*value;
+	char	*new;
 	char	*tmp;
-	int		start;
 	int		i;
 	int		fd;
 	ssize_t	size;
@@ -33,10 +60,10 @@ char	*remove_quotes_expand_variables(char *str)
 
 	i = 0;
 	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
-		return (str);
-	fd = open("var.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
+		return (ft_strdup(str));
+	fd = open("var.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
-		return (perror("Error: Open"), free(str), NULL);
+		return (perror("Error: Open"), NULL);
 	while (str[i])
 	{
 		if (str[i] == '\'')
@@ -56,61 +83,35 @@ char	*remove_quotes_expand_variables(char *str)
 			{
 				if (str[i] == '$')
 				{
-					start = ++i;
-					if (str[start] == '?')
+					i = put_variable(str, fd, i);
+					if (!i)
 					{
-						//tmp = ft_itoa(get_exit_status());
-						//if (!tmp)
-						//	return (free(str), close(fd), NULL);
-						//ft_putstr_fd(tmp, fd);
-						//free(tmp);
-						i++;
-						continue ;
-					}
-					while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != quote)
-						i++;
-					tmp = ft_substr(str, start, i - start);
-					value = getenv(tmp);
-					free(tmp);
-					if (!value)
-						return (write_error(ERROR_VAR), free(str), NULL);
-					ft_putstr_fd(value, fd);
-					if (str[i] == quote)
-					{
-						i++;
-						break;
+						close(fd);
+						if (unlink("var.txt") != 0)
+							perror("Unlink failed");
+						return (NULL);
 					}
 				}
-				ft_putchar_fd(str[i++], fd);
+				else
+					ft_putchar_fd(str[i++], fd);
 			}
+			if (str[i] == quote)
+				i++;
 		}
 		else if (str[i] == '$')
 		{
-			start = ++i;
-			if (str[start] == '?')
+			i = put_variable(str, fd, i);
+			if (!i)
 			{
-				//tmp = ft_itoa(get_exit_status());
-				//if (!tmp)
-				//	return (free(str), close(fd), NULL);
-				//ft_putstr_fd(tmp, fd);
-				//free(tmp);
-				i++;
-				continue ;
+				close(fd);
+				if (unlink("var.txt") != 0)
+					perror("Unlink failed");
+				return (NULL);
 			}
-			while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"' && str[i] !='\'')
-				i++;
-			tmp = ft_substr(str, start, i - start);
-			value = getenv(tmp);
-			free(tmp);
-			if (!value)
-				return (write_error(ERROR_VAR), free(str), NULL);
-			ft_putstr_fd(value, fd);
 		}
 		else
 			ft_putchar_fd(str[i++], fd);
 	}
-	free(str);
-	str = NULL;
 	close(fd);
 	fd = open("var.txt", O_RDONLY);
 	if (fd == -1)
@@ -118,17 +119,24 @@ char	*remove_quotes_expand_variables(char *str)
 		perror("Error: Open");
 		return (NULL);
 	}
+	new = NULL;
 	size = read(fd, buffer, BUFFER_SIZE - 1);
 	while (size > 0)
 	{
 		buffer[size] = '\0';
-		if (!str)
-			str = ft_strdup(buffer);
+		if (!new)
+		{
+			new = ft_strdup(buffer);
+			if (!new)
+				return (NULL);
+		}
 		else
 		{
-			tmp = ft_strjoin(str, buffer);
-			free(str);
-			str = tmp;
+			tmp  = ft_strjoin(new, buffer);
+			if (!tmp)
+				return (NULL);
+			free(new);
+			new = tmp;
 		}
 		size = read(fd, buffer, BUFFER_SIZE - 1);
 	}
@@ -138,14 +146,12 @@ char	*remove_quotes_expand_variables(char *str)
 		close(fd);
 		if (unlink("var.txt") != 0)
 			perror("Unlink failed");
-		if (str)
-			free(str);
 		return (NULL);
 	}
 	close(fd);
 	if (unlink("var.txt") != 0)
 		return (perror("Unlink failed"), NULL);
-	return (str);
+	return (new);
 }
 
 char	**tokenize_input(char *str)
@@ -156,13 +162,11 @@ char	**tokenize_input(char *str)
 	int		count;
 	int		i;
 	char	quote;
+	char 	*tmp;
 
 	count = count_args(str);
 	if (!count)
-	{
-		free(str);
 		return (NULL);
-	}
 	args = malloc((count + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
@@ -179,62 +183,105 @@ char	**tokenize_input(char *str)
 		{
 			if (*end == '\'' || *end == '"')
 			{
-				quote = *end;
-				end++;
-				end = ft_strchr(end, quote);
+				quote = *end++;
+				while (*end && *end != quote)
+					end++;
+				if (*end == quote)
+					end++;
 			}
-			end++;
+			else
+				end++;
 		}
 		args[i] = ft_substr(start, 0, end - start);
-		start = end++;
-		args[i] = remove_quotes_expand_variables(args[i]);
-		if (!args[i])
-			return (free_arrays((void **)args), free(str), NULL);
+		tmp = remove_quotes_expand_variables(args[i]);
+		if (!tmp)
+			return (free_arrays((void **)args), NULL);
+		free(args[i]);
+		args[i] = NULL;
+		args[i] = tmp;
+		start = ++end;
 		i++;
-		//if (*start == '\'')
-		//{
-		//	start++;
-		//	end = ft_strchr(start, '\'');
-		//	args[i] = ft_substr(start, 0, end - start);
-		//	start = end + 1;
-		//}
-		//else if (*start == '"')
-		//{
-		//	start++;
-		//	end = ft_strchr(start, '"');
-		//	args[i] = ft_substr(start, 0, end - start);
-		//	start = end + 1;
-		//	args[i] = expand_variables(args[i]);
-		//	if (!args[i])
-		//		return (free_arrays((void **)args), free(str), NULL);
-		//}
-		//else
-		//{
-		//	end = start;
-		//	while (*end && !ft_isspace(*end) && *end != '\'' && *end != '"')
-		//		end++;
-		//	args[i] = ft_substr(start, 0, end - start);
-		//	start = end;
-		//	args[i] = expand_variables(args[i]);
-		//	if (!args[i])
-		//	{
-		//		free_arrays((void **)args);
-		//		free(str);
-		//		return (NULL);
-		//	}
-		//}
 	}
 	args[i] = NULL;
 	print_char_array(args);
-	free(str);
 	return (args);
 }
 
-void	parser(char *str, t_cmd **commands)
+char	**split_by_pipes(char *str)
 {
+	int		i;
+	int		count;
+	char	**split;
+	char	*start;
+	char	*end;
+	char	quote;
+
+	count = count_commands(str);
+	split = malloc(sizeof(char *) * (count + 1));
+	if (!split)
+		return (NULL);
+	i = 0;
+	start = str;
+	end = str;
+	while (*end)
+	{
+		if (*end == '\'' || *end == '"')
+		{
+			quote = *end;
+			end++;
+			while (*end && *end != quote)
+				end++;
+			if (*end == quote)
+				end++;
+		}
+		else if (*end == '|')
+		{
+			split[i++] = ft_substr(start, 0, end - start);
+			end++;
+			start = end;
+		}
+		else
+			end++;
+	}
+	split[i++] = ft_substr(start, 0, end - start);
+	split[i] = NULL;
+	return (split);
+}
+
+t_cmd	*parser(char *str)
+{
+	char	**split;
+	t_cmd	*commands;
+	t_cmd	*tmp;
+	int		i;
+
 	if (check_syntax(str) != EXIT_SUCCESS)
-		return ;
-	(*commands)->args = tokenize_input(str);
+		return (NULL);
+	commands = t_cmd_new_empty();
+	if (!commands)
+		return (NULL);
+	tmp = commands;
+	split = split_by_pipes(str);
+	if (!split)
+		return (clear_t_cmd(&commands), NULL);
+	i = 0;
+	while (split[i])
+	{
+		tmp->args = tokenize_input(split[i]);
+		if (!tmp->args)
+			return (free_arrays((void **)split), clear_t_cmd(&commands), NULL);
+		if (split[i])
+		{
+			tmp->next = t_cmd_new_empty();
+			if (!tmp->next)
+				break ;
+			tmp = tmp->next;
+		}
+		i++;
+	}
+	// print_char_array(split);
+	free_arrays((void **)split);
+	return (commands);
 }
 
 int	main(void)
@@ -248,11 +295,9 @@ int	main(void)
 		str = readline(">");
 		if (!str)
 			break ;
-		commands = t_cmd_new_empty();
-		if (!commands)
-			return (EXIT_FAILURE);
 		add_history(str);
-		parser(str, &commands);
+		commands = parser(str);
+		free(str);
 		if (commands)
 			clear_t_cmd(&commands);
 	}
