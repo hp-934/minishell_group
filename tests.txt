@@ -22,6 +22,9 @@ echo $PATH
 //syntax error
 echo "hello
 
+//invalide Variable
+$PAT
+
 //empty pipes
 | ls
 ls |

@@ -6,153 +6,11 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:18:11 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 18:30:19 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile int	g_signal = 0;
-
-void	handle_sigquit(int sig)
-{
-	(void) sig;
-	g_signal = 1;
-}
-
-int	put_variable(char *str, int fd, int i)
-{
-	int		start;
-	char	*tmp;
-	char	*value;
-
-	start = ++i;
-	if (str[start] == '?')
-	{
-		tmp = ft_itoa(get_exit_status());
-		if (!tmp)
-			return (0);
-		ft_putstr_fd(tmp, fd);
-		free(tmp);
-		i++;
-		return (i);
-	}
-	while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"' && str[i] !='\'')
-		i++;
-	tmp = ft_substr(str, start, i - start);
-	value = getenv(tmp);
-	free(tmp);
-	if (!value)
-		return (write_error(ERROR_VAR), 0);
-	ft_putstr_fd(value, fd);
-	return (i);
-}
-
-char	*remove_quotes_expand_variables(char *str)
-{
-	char	*new;
-	char	*tmp;
-	int		i;
-	int		fd;
-	ssize_t	size;
-	char	buffer[BUFFER_SIZE];
-	char	quote;
-
-	i = 0;
-	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
-		return (ft_strdup(str));
-	fd = open("var.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd == -1)
-		return (perror("Error: Open"), NULL);
-	while (str[i])
-	{
-		if (str[i] == '\'')
-		{
-			quote = str[i];
-			i++;
-			while (str[i] && str[i] != quote)
-				ft_putchar_fd(str[i++], fd);
-			if (str[i] == quote)
-				i++;
-		}
-		else if (str[i] == '"')
-		{
-			quote = str[i];
-				i++;
-			while (str[i] && str[i] != quote)
-			{
-				if (str[i] == '$')
-				{
-					i = put_variable(str, fd, i);
-					if (!i)
-					{
-						close(fd);
-						if (unlink("var.txt") != 0)
-							perror("Unlink failed");
-						return (NULL);
-					}
-				}
-				else
-					ft_putchar_fd(str[i++], fd);
-			}
-			if (str[i] == quote)
-				i++;
-		}
-		else if (str[i] == '$')
-		{
-			i = put_variable(str, fd, i);
-			if (!i)
-			{
-				close(fd);
-				if (unlink("var.txt") != 0)
-					perror("Unlink failed");
-				return (NULL);
-			}
-		}
-		else
-			ft_putchar_fd(str[i++], fd);
-	}
-	close(fd);
-	fd = open("var.txt", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("Error: Open");
-		return (NULL);
-	}
-	new = NULL;
-	size = read(fd, buffer, BUFFER_SIZE - 1);
-	while (size > 0)
-	{
-		buffer[size] = '\0';
-		if (!new)
-		{
-			new = ft_strdup(buffer);
-			if (!new)
-				return (NULL);
-		}
-		else
-		{
-			tmp  = ft_strjoin(new, buffer);
-			if (!tmp)
-				return (NULL);
-			free(new);
-			new = tmp;
-		}
-		size = read(fd, buffer, BUFFER_SIZE - 1);
-	}
-	if (size == -1)
-	{
-		perror("Error: read");
-		close(fd);
-		if (unlink("var.txt") != 0)
-			perror("Unlink failed");
-		return (NULL);
-	}
-	close(fd);
-	if (unlink("var.txt") != 0)
-		return (perror("Unlink failed"), NULL);
-	return (new);
-}
 
 char	**tokenize_input(char *str)
 {
@@ -174,8 +32,7 @@ char	**tokenize_input(char *str)
 	i = 0;
 	while (i < count)
 	{
-		while (ft_isspace(*start))
-			start++;
+		start = skip_spaces(start);
 		if (!*start)
 			break ;
 		end = start;
@@ -196,8 +53,7 @@ char	**tokenize_input(char *str)
 		tmp = remove_quotes_expand_variables(args[i]);
 		if (!tmp)
 			return (free_arrays((void **)args), NULL);
-		free(args[i]);
-		args[i] = NULL;
+		free_and_null(&args[i]);
 		args[i] = tmp;
 		start = ++end;
 		i++;
@@ -282,25 +138,4 @@ t_cmd	*parser(char *str)
 	// print_char_array(split);
 	free_arrays((void **)split);
 	return (commands);
-}
-
-int	main(void)
-{
-	char	*str;
-	t_cmd	*commands;
-
-	signal(SIGQUIT, handle_sigquit);
-	while (g_signal == 0)
-	{
-		str = readline(">");
-		if (!str)
-			break ;
-		add_history(str);
-		commands = parser(str);
-		free(str);
-		if (commands)
-			clear_t_cmd(&commands);
-	}
-	rl_clear_history();
-	return (0);
 }

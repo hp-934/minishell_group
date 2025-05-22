@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:19:28 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 18:26:40 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	free_arrays(void **array);
 void	clear_t_cmd(t_cmd **command);
 t_cmd	*t_cmd_new_empty(void);
 void	print_char_array(char **str);
+void	free_and_null(char **str);
 
 //spaces
 bool	ft_isspace(char c);
@@ -83,5 +84,11 @@ int		write_error(int error);
 //counting
 int		count_args(char *str);
 int		count_commands(char *str);
+
+//parser
+t_cmd	*parser(char *str);
+
+//quotes and variable handling
+char	*remove_quotes_expand_variables(char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:20:02 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/22 18:30:48 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,12 @@ void	print_char_array(char **str)
 	}
 	count++;
 	printf("---\n");
+}
+
+void	free_and_null(char **str)
+{
+	if (!*str)
+		return ;
+	free(*str);
+	*str = NULL;
 }
