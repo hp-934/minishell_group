@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 18:27:35 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:36:49 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	put_variable(char *str, int fd, int i)
 	{
 		tmp = ft_itoa(get_exit_status());
 		if (!tmp)
-			return (0);
+			return (-1);
 		ft_putstr_fd(tmp, fd);
 		free_and_null(&tmp);
 		i++;
@@ -36,38 +36,39 @@ int	put_variable(char *str, int fd, int i)
 	value = getenv(tmp);
 	free_and_null(&tmp);
 	if (!value)
-		return (write_error(ERROR_VAR), 0);
+		return (write_error(ERROR_VAR), -1);
 	ft_putstr_fd(value, fd);
 	return (i);
 }
 
-char	*create_or_join_str(char *buffer, char *new)
+char	*create_or_join_str(char *buffer, char *str)
 {
 	char	*tmp;
 
-	if (!new)
+	if (!str)
 	{
-		new = ft_strdup(buffer);
-		if (!new)
+		str = ft_strdup(buffer);
+		if (!str)
 			return (NULL);
 	}
 	else
 	{
-		tmp = ft_strjoin(new, buffer);
-		free_and_null(&new);
+		tmp = ft_strjoin(str, buffer);
+		free_and_null(&str);
 		if (!tmp)
 			return (NULL);
-		new = tmp;
+		str = tmp;
 	}
-	return (new);
+	return (str);
 }
 
-char	*fd_to_str(int fd)
+char	*fd_to_str(void)
 {
 	char	*new;
 	char	*tmp;
 	ssize_t	size;
 	char	buffer[BUFFER_SIZE];
+	int		fd;
 
 	fd = open("var.txt", O_RDONLY);
 	if (fd == -1)
@@ -136,7 +137,7 @@ char	*remove_quotes_expand_variables(char *str)
 				if (str[i] == '$')
 				{
 					i = put_variable(str, fd, i);
-					if (i == 0)
+					if (i < 0)
 						return (handle_invalid_variable(fd));
 				}
 				else
@@ -148,12 +149,12 @@ char	*remove_quotes_expand_variables(char *str)
 		else if (str[i] == '$')
 		{
 			i = put_variable(str, fd, i);
-			if (i == 0)
+			if (i < 0)
 				return (handle_invalid_variable(fd));
 		}
 		else
 			ft_putchar_fd(str[i++], fd);
 	}
 	close(fd);
-	return (fd_to_str(fd));
+	return (fd_to_str());
 }

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 18:30:48 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:58:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	free_arrays(void **array)
 	while (array[i])
 	{
 		free(array[i]);
+		array[i] = NULL;
 		i++;
 	}
 	free(array);
@@ -39,7 +40,7 @@ void	clear_t_cmd(t_cmd **command)
 		if ((*command)->args)
 			free_arrays((void **)(*command)->args);
 		if ((*command)->path)
-			free((*command)->path);
+			free_and_null(&(*command)->path);
 		free(*command);
 		*command = temp;
 	}
@@ -69,14 +70,14 @@ void	print_char_array(char **str)
 
 	if (!str)
 		return ;
-	printf("command %d\n", count);
+	printf("[command %d]\n", count);
 	while (*str)
 	{
 		printf("%s\n", *str);
 		str++;
 	}
 	count++;
-	printf("---\n");
+	//printf("---\n");
 }
 
 void	free_and_null(char **str)

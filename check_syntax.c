@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:00:01 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:04:50 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ int	check_pipes(char *str)
 		if (*str == '\'' || *str == '"')
 		{
 			quote = *str++;
-			str = skip_spaces(str);
+			while (*str && *str != quote)
+				str++;
 			if (*str == quote)
 				str++;
 		}

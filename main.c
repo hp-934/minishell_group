@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:22:52 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 18:29:20 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:10:43 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(void)
 			break ;
 		add_history(str);
 		commands = parser(str);
-		free(str);
+		free_and_null(&str);
 		if (commands)
 			clear_t_cmd(&commands);
 	}
