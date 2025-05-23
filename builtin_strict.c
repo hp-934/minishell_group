@@ -35,3 +35,7 @@ void	cd_builtin(t_cmd *cmd)
 	}
 	set_exit_status(0);
 }
+
+void	export_builtin()
+void	exit_builtin()
+void	unset_builtin()

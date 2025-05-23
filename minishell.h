@@ -24,17 +24,6 @@
 
 extern volatile sig_atomic_t	g_signal_received;
 
-typedef struct s_cmd
-{
-	char			**args;
-	char			*path;
-	int				is_builtin;
-	int				pid;
-	int				input_fd;
-	int				output_fd;
-	struct s_cmd	*next;
-}	t_cmd;
-
 typedef enum e_builtin_type
 {
 	NON_BUILTIN = 0,
@@ -46,6 +35,24 @@ typedef enum e_builtin_type
 	BUILTIN_ENV,
 	BUILTIN_EXIT
 }	t_builtin_type;
+
+typedef struct s_cmd
+{
+	char			**args;
+	char			*path;
+	int				is_builtin;
+	int				pid;
+	int				input_fd;
+	int				output_fd;
+	struct s_cmd	*next;
+}	t_cmd;
+
+typedef struct s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
 
 void	input_loop(void);
 
