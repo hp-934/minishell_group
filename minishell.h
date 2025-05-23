@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 17:09:25 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:47:29 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ char	*skip_spaces(char *str);
 //check_sytax
 int		check_syntax(char *str);
 int		toggle_quotes(char c, bool *in_single, bool *in_double);
+char	*after_quote(char *str);
 
 //write_errors
 int		write_error(int error);

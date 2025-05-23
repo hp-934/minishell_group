@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 17:28:50 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/22 17:18:54 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:52:16 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,12 @@
 int	count_commands(char *str)
 {
 	int		count;
-	char	quote;
 
 	count = 1;
 	while (*str)
 	{
 		if (*str == '\'' || *str == '"')
-		{
-			quote = *str;
-			str++;
-			while (*str && *str != quote)
-				str++;
-			if (*str == quote)
-				str++;
-		}
+			str = after_quote(str);
 		else if (*str == '|')
 		{
 			count++;

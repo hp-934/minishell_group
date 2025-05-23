@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 17:09:07 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 18:00:47 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,18 @@ int	toggle_quotes(char c, bool *in_single, bool *in_double)
 	else
 		return (0);
 	return (1);
+}
+
+char	*after_quote(char *str)
+{
+	char	quote;
+
+	quote = *str++;
+	while (*str && *str != quote)
+		str++;
+	if (*str == quote)
+		str++;
+	return (str);
 }
 
 int	check_quotes(char *str)
@@ -50,22 +62,21 @@ int	check_quotes(char *str)
 
 int	check_pipes(char *str)
 {
-	char	quote;
+	bool	in_single;
+	bool	in_double;
 
+	in_single = false;
+	in_double = false;
 	str = skip_spaces(str);
 	if (*str == '|')
 		return (write_error(ERROR_PIPES));
 	while (*str)
 	{
-		if (*str == '\'' || *str == '"')
-		{
-			quote = *str++;
-			while (*str && *str != quote)
-				str++;
-			if (*str == quote)
-				str++;
-		}
-		else if (*str == '|')
+		if (*str == '\'' && !in_double)
+			in_single = !in_single;
+		else if (*str == '"' && !in_single)
+			in_double = !in_double;
+		if (*str == '|' && !in_single && !in_double)
 		{
 			str++;
 			str = skip_spaces(str);
