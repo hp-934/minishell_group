@@ -1,0 +1,132 @@
+>$PAT
+Invalid variable
+>
+>$USER$PATH
+[command 1]
+hannah/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+>
+>$?$USER  "Test$?"
+[command 1]
+0hannah
+Test0
+>
+>echo hello
+[command 1]
+echo
+hello
+>
+>ls -l | grep main
+[command 1]
+ls
+-l
+[command 2]
+grep
+main
+>
+>cat "some file" | grep "hello $PATH" | wc -l
+[command 1]
+cat
+some file
+[command 2]
+grep
+hello /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+[command 3]
+wc
+-l
+>
+>echo '$HOME is cool'
+[command 1]
+echo
+$HOME is cool
+>
+>echo "$HOME is cool"
+[command 1]
+echo
+/home/hannah is cool
+>
+>echo 'user:' "$USER"
+[command 1]
+echo
+user:
+hannah
+>
+>echo $PATH
+[command 1]
+echo
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+>
+>echo "hello
+Invalid character or quotes
+>
+>| ls
+Invalid pipe '|' syntax
+>
+>ls |
+Invalid pipe '|' syntax
+>
+>ls || echo hi
+Invalid pipe '|' syntax
+>
+>ls | | grep
+Invalid pipe '|' syntax
+>
+>| echo hello
+Invalid pipe '|' syntax
+>
+>echo hello || wc
+Invalid pipe '|' syntax
+>
+>echo hello | wc
+[command 1]
+echo
+hello
+[command 2]
+wc
+>
+>echo "hello | world" | wc
+[command 1]
+echo
+hello | world
+[command 2]
+wc
+>
+>echo '|'
+[command 1]
+echo
+|
+>
+>cat << EOF | wc
+[command 1]
+cat
+<<
+EOF
+[command 2]
+wc
+>
+>echo "this | is not a pipe"
+[command 1]
+echo
+this | is not a pipe
+>
+>"hello"
+[command 1]
+hello
+>
+>'world'
+[command 1]
+world
+>
+>""
+[command 1]
+"
+>
+>"'\';"
+[command 1]
+'\';
+>
+>"test";
+Invalid character or quotes
+>
+>"test" \
+Invalid character or quotes
+>

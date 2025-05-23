@@ -6,33 +6,44 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 13:04:50 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:09:07 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	toggle_quotes(char c, bool *in_single, bool *in_double)
+{
+	if (c == '\'' && !*in_double)
+		*in_single = !*in_single;
+	else if (c == '"' && !*in_single)
+		*in_double = !*in_double;
+	else
+		return (0);
+	return (1);
+}
+
 int	check_quotes(char *str)
 {
-	bool	start_single;
-	bool	start_double;
+	bool	in_single;
+	bool	in_double;
 
-	start_single = false;
-	start_double = false;
+	in_single = false;
+	in_double = false;
 	while (*str)
 	{
-		if (*str == '\'' && !start_double)
-			start_single = !start_single;
-		else if (*str == '"' && !start_single)
-			start_double = !start_double;
+		if (*str == '\'' && !in_double)
+			in_single = !in_single;
+		else if (*str == '"' && !in_single)
+			in_double = !in_double;
 		else if (*str == '\\' || *str == ';')
 		{
-			if (!start_single && !start_double)
+			if (!in_single && !in_double)
 				return (write_error(ERROR_SYNTAX));
 		}
 		str++;
 	}
-	if (start_single || start_double)
+	if (in_single || in_double)
 		return (write_error(ERROR_SYNTAX));
 	return (EXIT_SUCCESS);
 }

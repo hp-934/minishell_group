@@ -6,11 +6,13 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 13:36:49 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/23 17:08:55 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+#define VAR_FILE "temp_var.txt"
 
 int	put_variable(char *str, int fd, int i)
 {
@@ -26,8 +28,7 @@ int	put_variable(char *str, int fd, int i)
 			return (-1);
 		ft_putstr_fd(tmp, fd);
 		free_and_null(&tmp);
-		i++;
-		return (i);
+		return (++i);
 	}
 	while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"'
 		&& str[i] != '\'')
@@ -67,48 +68,34 @@ char	*fd_to_str(void)
 	char	*new;
 	char	*tmp;
 	ssize_t	size;
-	char	buffer[BUFFER_SIZE];
+	char	buffer[BUFFER_SIZE + 1];
 	int		fd;
 
-	fd = open("var.txt", O_RDONLY);
+	fd = open(VAR_FILE, O_RDONLY);
 	if (fd == -1)
 		return (NULL);
 	new = NULL;
-	size = read(fd, buffer, BUFFER_SIZE - 1);
+	tmp = NULL;
+	size = read(fd, buffer, BUFFER_SIZE);
 	while (size > 0)
 	{
 		buffer[size] = '\0';
 		tmp = create_or_join_str(buffer, new);
 		if (!tmp)
-			break;
+			break ;
 		new = tmp;
-		size = read(fd, buffer, BUFFER_SIZE - 1);
+		size = read(fd, buffer, BUFFER_SIZE);
 	}
-	if (size == -1)
-		free_and_null(&new);
 	close(fd);
-	if (unlink("var.txt") != 0)
-		return (perror("Unlink failed"), free_and_null(&new), NULL);
+	if (!tmp || size == -1 || unlink(VAR_FILE) != 0)
+		free_and_null(&new);
 	return (new);
-}
-
-int	rm_quote_and_putchar(char *str, int i, int fd)
-{
-	char	quote;
-
-	quote = str[i];
-	i++;
-	while (str[i] && str[i] != quote)
-		ft_putchar_fd(str[i++], fd);
-	if (str[i] == quote)
-		i++;
-	return (i);
 }
 
 char	*handle_invalid_variable(int fd)
 {
 	close(fd);
-	if (unlink("var.txt") != 0)
+	if (unlink(VAR_FILE) != 0)
 		perror("Unlink failed");
 	return (NULL);
 }
@@ -117,43 +104,26 @@ char	*remove_quotes_expand_variables(char *str)
 {
 	int		i;
 	int		fd;
-	char	quote;
+	bool	in_single;
+	bool	in_double;
 
-	i = 0;
 	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
 		return (ft_strdup(str));
-	fd = open("var.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	i = 0;
+	in_single = false;
+	in_double = false;
+	fd = open(VAR_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		return (perror("Error: Open"), NULL);
 	while (str[i])
 	{
-		if (str[i] == '\'')
-			i = rm_quote_and_putchar(str, i, fd);
-		else if (str[i] == '"')
-		{
-			quote = str[i++];
-			while (str[i] && str[i] != quote)
-			{
-				if (str[i] == '$')
-				{
-					i = put_variable(str, fd, i);
-					if (i < 0)
-						return (handle_invalid_variable(fd));
-				}
-				else
-					ft_putchar_fd(str[i++], fd);
-			}
-			if (str[i] == quote)
-				i++;
-		}
-		else if (str[i] == '$')
-		{
+		i += toggle_quotes(str[i], &in_single, &in_double);
+		if (str[i] == '$' && !in_single)
 			i = put_variable(str, fd, i);
-			if (i < 0)
-				return (handle_invalid_variable(fd));
-		}
 		else
 			ft_putchar_fd(str[i++], fd);
+		if (i < 0)
+			return (handle_invalid_variable(fd));
 	}
 	close(fd);
 	return (fd_to_str());

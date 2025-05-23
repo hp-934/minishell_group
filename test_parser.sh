@@ -1,26 +1,32 @@
 #!/bin/bash
 
 MINISHELL=./minishell
-TMP_OUTPUT=tmp_output.txt
+OUTPUT=test_output.txt
+EXPECTED=test_expected.txt
 
 # Helper function to run a test
 run_test() {
     input="$2"
 
-    echo "$input" | $MINISHELL > $TMP_OUTPUT 2>&1
-    cat $TMP_OUTPUT
-    echo " "
+    echo "$input" | $MINISHELL >> $OUTPUT 2>&1
+    echo " " >> $OUTPUT
 }
 
 # Test cases
 
+rm -f $OUTPUT
+
 run_test "// Invalid Variable" "\$PAT"
+
+run_test "" "\$USER\$PATH"
+
+run_test "" "\$?\$USER  \"Test\$?\""
 
 run_test "// Basic Command Parsing" "echo hello"
 
 run_test "// Pipes" "ls -l | grep main"
 
-run_test "// Multiple Pipes with Quotes" 'cat "some file" | grep "hello $USER" | wc -l'
+run_test "// Multiple Pipes with Quotes" 'cat "some file" | grep "hello $PATH" | wc -l'
 
 run_test "// Single Quotes — No Expansion" "echo '\$HOME is cool'"
 
@@ -66,5 +72,4 @@ run_test "// Invalid characters outside quotes" "\"test\";"
 
 run_test "// Invalid characters outside quotes" "\"test\" \ "
 
-# Clean up
-rm -f $TMP_OUTPUT $TMP_EXPECTED
+#diff test_expected.txt test_output.txt
