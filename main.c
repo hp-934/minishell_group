@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:22:52 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 15:27:51 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:51:25 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,29 @@ void	handle_sigquit(int sig)
 	(void) sig;
 	g_signal = 1;
 }
-void	print_cmd_args(t_cmd *commands)
+void	print_cmd(t_cmd *commands)
 {
 	if (!commands)
 		return ;
 	while (commands)
 	{
+		printf("---ARGS---\n");
 		print_char_array(commands->args);
+		printf("---PATH---\n");
+		printf("%s\n", commands->path);
+		printf("---IS_BUILDIN---\n");
+		printf("%d\n", commands->is_builtin);
+		printf("---INPUT_FD---\n");
+		printf("%d\n", commands->input_fd);
+		printf("---OUTPUT_FD---\n");
+		printf("%d\n", commands->output_fd);
+		printf("---PID---\n");
+		printf("%d\n", commands->pid);
+		printf("=======\n");
 		commands = commands->next;
 	}
 }
+
 
 int	main(void)
 {
@@ -44,7 +57,7 @@ int	main(void)
 		add_history(str);
 		commands = parser(str);
 		free_and_null(&str);
-		print_cmd_args(commands);
+		print_cmd(commands);
 		if (commands)
 			clear_t_cmd(&commands);
 	}

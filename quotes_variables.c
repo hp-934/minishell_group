@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 15:00:57 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 17:07:38 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,9 @@ char	*fd_to_str(void)
 		size = read(fd, buffer, BUFFER_SIZE);
 	}
 	close(fd);
-	if (!tmp || size == -1 || unlink(VAR_FILE) != 0)
+	if (!tmp || size == -1)
+		free_and_null(&new);
+	if (unlink(VAR_FILE) != 0)
 		free_and_null(&new);
 	return (new);
 }

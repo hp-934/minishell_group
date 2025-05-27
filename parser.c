@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 15:25:53 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 17:13:09 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,19 @@ int	check_cmd_args(t_cmd *commands)
 {
 	char	**tmp;
 
+	int		i;
+
 	if (!commands)
-		return (write_error(ERROR_COMMAND));
+		return (EXIT_FAILURE);
 	while (commands)
 	{
 		tmp = commands->args;
 		if (!tmp[0][0])
+			return (write_error(ERROR_COMMAND));
+		i = 0;
+		while (ft_isspace(tmp[0][i]))
+			i++;
+		if (!tmp[0][i])
 			return (write_error(ERROR_COMMAND));
 		commands = commands->next;
 	}
@@ -104,7 +111,6 @@ t_cmd	*parser(char *str)
 	t_cmd	*commands;
 	t_cmd	*tmp;
 	int		i;
-	int		error;
 
 	if (check_syntax(str) != EXIT_SUCCESS)
 		return (NULL);
@@ -137,8 +143,8 @@ t_cmd	*parser(char *str)
 		i++;
 	}
 	free_arrays((void **)split);
-	error = check_cmd_args(commands);
-	if (error)
+	if (check_cmd_args(commands))
 		clear_t_cmd(&commands);
+	commands = handle_redirections(&commands);
 	return (commands);
 }

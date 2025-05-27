@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 15:04:45 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:49:29 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # define ERROR_VAR 2
 # define ERROR_PIPES 3
 # define ERROR_COMMAND 4
+# define ERROR_REDIRECTION 5
 # define BUFFER_SIZE 100
 
 typedef enum e_builtin_type
@@ -87,10 +88,9 @@ int		write_error(int error);
 int		count_args(char *str);
 int		count_commands(char *str);
 
-//parser
+//parsing
 t_cmd	*parser(char *str);
-
-//quotes and variable handling
+t_cmd	*handle_redirections(t_cmd **commands);
 char	*remove_quotes_expand_variables(char *str);
 
 //print test
