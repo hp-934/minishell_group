@@ -57,32 +57,25 @@ echo
 /home/yaepark/.capt:/home/yaepark/.capt/root/usr/local/sbin:/home/yaepark/.capt/root/usr/local/bin:/home/yaepark/.capt/root/usr/sbin:/home/yaepark/.capt/root/usr/bin:/home/yaepark/.capt/root/sbin:/home/yaepark/.capt/root/bin:/home/yaepark/.capt/root/usr/games:/home/yaepark/.capt/root/usr/local/games:/home/yaepark/.capt/snap/bin:/home/yaepark/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/yaepark/.dotnet/tools
 >
 >echo "hello
-Invalid character or quotes
-Invalid/Empty command
+Invalid quotes or unsupported characters
 >
 >| ls
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls |
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls || echo hi
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls | | grep
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >| echo hello
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >echo hello || wc
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >echo hello | wc
 [command 1]
@@ -132,12 +125,10 @@ Invalid/Empty command
 '\';
 >
 >"test";
-Invalid character or quotes
-Invalid/Empty command
+Invalid quotes or unsupported characters
 >
 >"test" \
-Invalid character or quotes
-Invalid/Empty command
+Invalid quotes or unsupported characters
 >
 >NULL
 [command 1]

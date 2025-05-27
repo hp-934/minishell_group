@@ -58,31 +58,24 @@ echo
 >
 >echo "hello
 Invalid character or quotes
-Invalid/Empty command
 >
 >| ls
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls |
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls || echo hi
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >ls | | grep
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >| echo hello
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >echo hello || wc
 Invalid pipe '|' syntax
-Invalid/Empty command
 >
 >echo hello | wc
 [command 1]
@@ -133,11 +126,9 @@ Invalid/Empty command
 >
 >"test";
 Invalid character or quotes
-Invalid/Empty command
 >
 >"test" \
 Invalid character or quotes
-Invalid/Empty command
 >
 >NULL
 [command 1]
