@@ -4,10 +4,11 @@ MINISHELL=./minishell
 OUTPUT=test_output.txt
 EXPECTED=test_expected.txt
 
+# make
+
 # Helper function to run a test
 run_test() {
     input="$2"
-
     echo "$input" | $MINISHELL >> $OUTPUT 2>&1
     echo " " >> $OUTPUT
 }
@@ -71,5 +72,14 @@ run_test "// Invalid characters in quotes" "\"'\';\""
 run_test "// Invalid characters outside quotes" "\"test\";"
 
 run_test "// Invalid characters outside quotes" "\"test\" \ "
+
+run_test "" "NULL"
+
+run_test "" "\"NULL\""
+
+run_test "" "'NULL'"
+
+run_test "" "env NULL 3"
+
 
 #diff test_expected.txt test_output.txt

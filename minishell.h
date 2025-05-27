@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 17:47:29 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 15:04:45 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # define ERROR_SYNTAX 1
 # define ERROR_VAR 2
 # define ERROR_PIPES 3
+# define ERROR_COMMAND 4
 # define BUFFER_SIZE 100
 
 typedef enum e_builtin_type
@@ -68,7 +69,6 @@ typedef struct s_cmd
 void	free_arrays(void **array);
 void	clear_t_cmd(t_cmd **command);
 t_cmd	*t_cmd_new_empty(void);
-void	print_char_array(char **str);
 void	free_and_null(char **str);
 
 //spaces
@@ -92,5 +92,9 @@ t_cmd	*parser(char *str);
 
 //quotes and variable handling
 char	*remove_quotes_expand_variables(char *str);
+
+//print test
+void	print_cmd_args(t_cmd *commands);
+void	print_char_array(char **str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 18:00:47 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 14:30:58 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	toggle_quotes(char c, bool *in_single, bool *in_double)
 	else if (c == '"' && !*in_single)
 		*in_double = !*in_double;
 	else
-		return (0);
-	return (1);
+		return (false);
+	return (true);
 }
 
 char	*after_quote(char *str)

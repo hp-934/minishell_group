@@ -1,13 +1,14 @@
 >$PAT
 Invalid variable
+Invalid/Empty command
 >
 >$USER$PATH
 [command 1]
-hannah/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+yaepark/home/yaepark/.capt:/home/yaepark/.capt/root/usr/local/sbin:/home/yaepark/.capt/root/usr/local/bin:/home/yaepark/.capt/root/usr/sbin:/home/yaepark/.capt/root/usr/bin:/home/yaepark/.capt/root/sbin:/home/yaepark/.capt/root/bin:/home/yaepark/.capt/root/usr/games:/home/yaepark/.capt/root/usr/local/games:/home/yaepark/.capt/snap/bin:/home/yaepark/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/yaepark/.dotnet/tools
 >
 >$?$USER  "Test$?"
 [command 1]
-0hannah
+0yaepark
 Test0
 >
 >echo hello
@@ -29,7 +30,7 @@ cat
 some file
 [command 2]
 grep
-hello /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+hello /home/yaepark/.capt:/home/yaepark/.capt/root/usr/local/sbin:/home/yaepark/.capt/root/usr/local/bin:/home/yaepark/.capt/root/usr/sbin:/home/yaepark/.capt/root/usr/bin:/home/yaepark/.capt/root/sbin:/home/yaepark/.capt/root/bin:/home/yaepark/.capt/root/usr/games:/home/yaepark/.capt/root/usr/local/games:/home/yaepark/.capt/snap/bin:/home/yaepark/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/yaepark/.dotnet/tools
 [command 3]
 wc
 -l
@@ -42,39 +43,46 @@ $HOME is cool
 >echo "$HOME is cool"
 [command 1]
 echo
-/home/hannah is cool
+/home/yaepark is cool
 >
 >echo 'user:' "$USER"
 [command 1]
 echo
 user:
-hannah
+yaepark
 >
 >echo $PATH
 [command 1]
 echo
-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin:/home/hannah/.local/bin
+/home/yaepark/.capt:/home/yaepark/.capt/root/usr/local/sbin:/home/yaepark/.capt/root/usr/local/bin:/home/yaepark/.capt/root/usr/sbin:/home/yaepark/.capt/root/usr/bin:/home/yaepark/.capt/root/sbin:/home/yaepark/.capt/root/bin:/home/yaepark/.capt/root/usr/games:/home/yaepark/.capt/root/usr/local/games:/home/yaepark/.capt/snap/bin:/home/yaepark/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/yaepark/.dotnet/tools
 >
 >echo "hello
 Invalid character or quotes
+Invalid/Empty command
 >
 >| ls
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >ls |
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >ls || echo hi
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >ls | | grep
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >| echo hello
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >echo hello || wc
 Invalid pipe '|' syntax
+Invalid/Empty command
 >
 >echo hello | wc
 [command 1]
@@ -117,8 +125,7 @@ hello
 world
 >
 >""
-[command 1]
-"
+Invalid/Empty command
 >
 >"'\';"
 [command 1]
@@ -126,7 +133,27 @@ world
 >
 >"test";
 Invalid character or quotes
+Invalid/Empty command
 >
 >"test" \
 Invalid character or quotes
+Invalid/Empty command
+>
+>NULL
+[command 1]
+NULL
+>
+>"NULL"
+[command 1]
+NULL
+>
+>'NULL'
+[command 1]
+NULL
+>
+>env NULL 3
+[command 1]
+env
+NULL
+3
 >

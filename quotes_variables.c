@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 17:08:55 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 15:00:57 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ char	*fd_to_str(void)
 	new = NULL;
 	tmp = NULL;
 	size = read(fd, buffer, BUFFER_SIZE);
+	if (size == 0)
+		return (ft_strdup(""));
 	while (size > 0)
 	{
 		buffer[size] = '\0';
@@ -107,6 +109,8 @@ char	*remove_quotes_expand_variables(char *str)
 	bool	in_single;
 	bool	in_double;
 
+	if (!str || !*str)
+		return (ft_strdup(""));
 	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
 		return (ft_strdup(str));
 	i = 0;
@@ -117,13 +121,16 @@ char	*remove_quotes_expand_variables(char *str)
 		return (perror("Error: Open"), NULL);
 	while (str[i])
 	{
-		i += toggle_quotes(str[i], &in_single, &in_double);
-		if (str[i] == '$' && !in_single)
+		if (toggle_quotes(str[i], &in_single, &in_double) == true)
+			i++;
+		else if (str[i] == '$' && !in_single)
+		{
 			i = put_variable(str, fd, i);
+			if (i < 0)
+				return (handle_invalid_variable(fd));
+		}
 		else
 			ft_putchar_fd(str[i++], fd);
-		if (i < 0)
-			return (handle_invalid_variable(fd));
 	}
 	close(fd);
 	return (fd_to_str());

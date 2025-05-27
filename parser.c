@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/23 18:22:51 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/05/27 14:20:33 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ char	**tokenize_input(char *str)
 		i++;
 	}
 	args[i] = NULL;
-	print_char_array(args); //for testing, remove later
 	return (args);
 }
 
@@ -104,18 +103,22 @@ t_cmd	*parser(char *str)
 	{
 		tmp->args = tokenize_input(split[i]);
 		if (!tmp->args)
+		{
+			clear_t_cmd(&commands);
 			break;
+		}
 		if (split[i + 1])
 		{
 			tmp->next = t_cmd_new_empty();
 			if (!tmp->next)
+			{
+				clear_t_cmd(&commands);
 				break;
+			}
 			tmp = tmp->next;
 		}
 		i++;
 	}
-	if (!tmp->args || !tmp->next)
-		clear_t_cmd(&commands);
 	free_arrays((void **)split);
 	return (commands);
 }
