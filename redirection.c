@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 17:55:40 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 10:35:46 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ char	**remove_redirection_from_args(char **args)
 	int		j;
 
 	i = 0;
-	while(args[i] && args[i + 1])
+	while (args[i] && args[i + 1])
 	{
 		if (is_redirection(args[i]))
 		{
@@ -102,7 +102,7 @@ char	**remove_redirection_from_args(char **args)
 t_cmd	*handle_redirections(t_cmd **commands)
 {
 	char	**array;
-	int 	i;
+	int	i;
 	bool	error;
 	t_cmd	*commands_top;
 
