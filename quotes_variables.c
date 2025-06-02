@@ -6,13 +6,11 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 17:07:38 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 12:48:13 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-#define VAR_FILE "temp_var.txt"
 
 int	put_variable(char *str, int fd, int i)
 {
@@ -71,9 +69,9 @@ char	*fd_to_str(void)
 	char	buffer[BUFFER_SIZE + 1];
 	int		fd;
 
-	fd = open(VAR_FILE, O_RDONLY);
+	fd = open(TMP_FILE, O_RDONLY);
 	if (fd == -1)
-		return (NULL);
+		return (write_error(ERROR_FILE), NULL);
 	new = NULL;
 	tmp = NULL;
 	size = read(fd, buffer, BUFFER_SIZE);
@@ -91,7 +89,7 @@ char	*fd_to_str(void)
 	close(fd);
 	if (!tmp || size == -1)
 		free_and_null(&new);
-	if (unlink(VAR_FILE) != 0)
+	if (unlink(TMP_FILE) != 0)
 		free_and_null(&new);
 	return (new);
 }
@@ -99,7 +97,7 @@ char	*fd_to_str(void)
 char	*handle_invalid_variable(int fd)
 {
 	close(fd);
-	if (unlink(VAR_FILE) != 0)
+	if (unlink(TMP_FILE) != 0)
 		perror("Unlink failed");
 	return (NULL);
 }
@@ -118,9 +116,9 @@ char	*remove_quotes_expand_variables(char *str)
 	i = 0;
 	in_single = false;
 	in_double = false;
-	fd = open(VAR_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL| O_TRUNC, 0600);
 	if (fd == -1)
-		return (perror("Error: Open"), NULL);
+		return (write_error(ERROR_FILE), NULL);
 	while (str[i])
 	{
 		if (toggle_quotes(str[i], &in_single, &in_double) == true)

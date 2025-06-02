@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/05/27 16:49:29 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 12:09:12 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <termios.h>
 # include <sys/ioctl.h>
 # include <termcap.h>
+# include <errno.h>
 
 # define BLANK -1
 # define ERROR_SYNTAX 1
@@ -41,7 +42,12 @@
 # define ERROR_PIPES 3
 # define ERROR_COMMAND 4
 # define ERROR_REDIRECTION 5
+# define ERROR_FILE 6
+# define ERROR_HEREDOC 7
+
 # define BUFFER_SIZE 100
+
+#define TMP_FILE "tmp_file.txt"
 
 typedef enum e_builtin_type
 {
@@ -71,6 +77,7 @@ void	free_arrays(void **array);
 void	clear_t_cmd(t_cmd **command);
 t_cmd	*t_cmd_new_empty(void);
 void	free_and_null(char **str);
+char	*fd_to_str(void);
 
 //spaces
 bool	ft_isspace(char c);

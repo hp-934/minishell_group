@@ -6,13 +6,13 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:22:52 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 10:33:13 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 12:45:56 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile int	g_signal = 0;
+static volatile sig_atomic_t	g_signal = 0;
 
 void	handle_sigquit(int sig)
 {
@@ -27,9 +27,11 @@ void	print_cmd(t_cmd *commands)
 	while (commands)
 	{
 		printf("---ARGS---\n");
-		print_char_array(commands->args);
+		if (commands->args)
+			print_char_array(commands->args);
 		printf("---PATH---\n");
-		printf("%s\n", commands->path);
+		if (commands->path)
+			printf("%s\n", commands->path);
 		printf("---IS_BUILDIN---\n");
 		printf("%d\n", commands->is_builtin);
 		printf("---INPUT_FD---\n");
