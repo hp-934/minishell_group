@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:52:18 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 12:09:12 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:26:33 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 
 # define BUFFER_SIZE 100
 
-#define TMP_FILE "tmp_file.txt"
+# define TMP_FILE "tmp_file.txt"
 
 typedef enum e_builtin_type
 {
@@ -87,6 +87,7 @@ char	*skip_spaces(char *str);
 int		check_syntax(char *str);
 int		toggle_quotes(char c, bool *in_single, bool *in_double);
 char	*after_quote(char *str);
+bool	is_redirection(char *str);
 
 //write_errors
 int		write_error(int error);
@@ -99,6 +100,7 @@ int		count_commands(char *str);
 t_cmd	*parser(char *str);
 t_cmd	*handle_redirections(t_cmd **commands);
 char	*remove_quotes_expand_variables(char *str);
+int		handle_heredoc(t_cmd **commands, char **args, int i);
 
 //print test
 void	print_cmd_args(t_cmd *commands);

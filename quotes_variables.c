@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 12:48:13 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:15:57 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ char	*remove_quotes_expand_variables(char *str)
 	i = 0;
 	in_single = false;
 	in_double = false;
-	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL| O_TRUNC, 0600);
+	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
 	if (fd == -1)
 		return (write_error(ERROR_FILE), NULL);
 	while (str[i])

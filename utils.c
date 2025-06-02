@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 13:37:33 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/02 14:00:11 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ void	clear_t_cmd(t_cmd **command)
 			free_arrays((void **)(*command)->args);
 		if ((*command)->path)
 			free_and_null(&(*command)->path);
-		if ((*command)->input_fd > 2)
+		if ((*command)->input_fd > STDERR_FILENO)
 			close((*command)->input_fd);
-		if ((*command)->output_fd > 2)
+		if ((*command)->output_fd > STDERR_FILENO)
 			close((*command)->output_fd);
 		free(*command);
 		*command = temp;
