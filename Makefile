@@ -11,12 +11,16 @@ LIB = $(LIBFT) -lreadline
 SRC = test_executor.c \
 		builtin.c \
 		builtin_strict.c \
+		env.c \
+		env_convert.c \
+		env_node.c \
 		execute.c \
 		exit_status.c \
 		find_cmd.c \
 		print_error.c \
-		util.c
-		
+		util1.c	\
+		util2.c
+
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean fclean re libft

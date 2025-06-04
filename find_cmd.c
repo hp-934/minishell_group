@@ -13,25 +13,6 @@
 #include "minishell.h"
 #include "exit_status.h"
 
-int	check_builtin(char **args)
-{
-	if (!ft_strcmp(args[0], "echo") && args[1] && !ft_strcmp(args[1], "-n"))
-		return (BUILTIN_ECHO);
-	if (!ft_strcmp(args[0], "cd"))
-		return (BUILTIN_CD);
-	if (!ft_strcmp(args[0], "pwd") && args[1] == NULL)
-		return (BUILTIN_PWD);
-	if (!ft_strcmp(args[0], "export") && args[1] == NULL)
-		return (BUILTIN_EXPORT);
-	if (!ft_strcmp(args[0], "unset") && args[1] == NULL)
-		return (BUILTIN_UNSET);
-	if (!ft_strcmp(args[0], "env") && args[1] == NULL)
-		return (BUILTIN_ENV);
-	if (!ft_strcmp(args[0], "exit") && args[1] == NULL)
-		return (BUILTIN_EXIT);
-	return (0);
-}
-
 void	free_split(char **split)
 {
 	int	i;
@@ -45,34 +26,34 @@ void	free_split(char **split)
 	free(split);
 }
 
-char	**get_folders(char *envp[])
+char	**get_folders(t_env *env)
 {
 	int		i;
 	char	**folders;
 
 	i = 0;
-	while (envp[i])
+	while (env)
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		if (ft_strncmp(env->name, "PATH", 4) == 0)
 			break ;
-		i++;
+		env = env->next;
 	}
-	if (!envp[i])
+	if (!env)
 		return (NULL);
-	folders = ft_split(envp[i] + 5, ':');
+	folders = ft_split(env->value, ':');
 	if (!folders)
 		return (NULL);
 	return (folders);
 }
 
-char	*search_path(char *cmd, char **envp)
+char	*search_path(char *cmd, t_env *env)
 {
 	char	**folders;
 	char	*temp;
 	char	*path;
 	int		i;
 
-	folders = get_folders(envp);
+	folders = get_folders(env);
 	if (!folders)
 		return (NULL);
 	i = 0;
@@ -93,7 +74,7 @@ char	*search_path(char *cmd, char **envp)
 	return (free_split(folders), NULL);
 }
 
-void	find_path(t_cmd *cmd, char **envp)
+void	find_path(t_cmd *cmd, t_env *env)
 {
 	char	*command;
 
@@ -108,6 +89,6 @@ void	find_path(t_cmd *cmd, char **envp)
 		else
 			cmd->path = "-1";
 	}
-	else if (!is_strict_builtin(cmd->is_builtin))
-		cmd->path = search_path(command, envp);
+	else if (!is_pathless_builtin(cmd->is_builtin))
+		cmd->path = search_path(command, env);
 }

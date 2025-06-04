@@ -13,29 +13,121 @@
 #include "minishell.h"
 #include "exit_status.h"
 
-void	cd_builtin(t_cmd *cmd)
+void	update_cd_env(t_env *env, char *old_pwd, char *new_pwd)
 {
-	if (!cmd->args[1])
+	t_env	*match;
+	char	*old;
+	char	*new;
+
+	old = ft_strdup("OLDPWD");
+	new = ft_strdup("PWD");
+	printf("patch: %s\n", old_pwd);
+	match = search_node(old, env);
+	if (match)
+		replace_node(old, old_pwd, match);
+	else
+		append_node(old, old_pwd, env);
+	match = search_node(new, env);
+	if (match)
+		replace_node(new, new_pwd, match);
+	else
+		append_node(new, new_pwd, env);
+}
+
+void	cd_builtin(t_cmd *cmd, t_env *env)
+{
+	char	*old_pwd;
+	char	*new_pwd;
+
+	if (!cmd->args[1] || !cmd->args[1][0])
 	{
 		ft_putendl_fd("cd: usage: cd <path>\n", STDERR_FILENO);
-		set_exit_status(1);
-		return ;
+		return ((void)set_exit_status(1));
 	}
 	else if (cmd->args[2])
 	{
 		ft_putendl_fd("cd: too many arguments\n", STDERR_FILENO);
-		set_exit_status(1);
-		return ;
+		return ((void)set_exit_status(1));
 	}
+	old_pwd = getcwd(NULL, 0);
 	if (chdir(cmd->args[1]) == -1)
 	{
-		perror("cd");
-		set_exit_status(1);
-		return ;
+		if (old_pwd)
+			free(old_pwd);
+		print_builtin_error(cmd->is_builtin, cmd->args[1]);
+		return ((void)set_exit_status(1));
+	}
+	new_pwd = getcwd(NULL, 0);
+	update_cd_env(env, old_pwd, new_pwd);
+	set_exit_status(0);
+}
+
+void	export_builtin(t_cmd *cmd, t_env *env)
+{
+	int		i;
+	char	*name;
+	char	*value;
+	t_env	*match;
+
+	i = 0;
+	while (cmd->args[++i])
+	{
+		name = split_name_value(cmd->args[i], &value);
+		if (!name || name[0] == '\0')
+		{
+			free(name);
+			free(value);
+			continue ;
+		}
+		match = search_node(name, env);
+		if (match)
+			replace_node(name, value, match);
+		else
+			append_node(name, value, env);
+	}
+	if (i == 1)
+		print_env_az(env);
+	set_exit_status(0);
+}
+
+void	unset_builtin(t_cmd *cmd, t_env **env_head)
+{
+	int	i;
+
+	i = 1;
+	while (cmd->args[i])
+	{
+		remove_node(env_head, cmd->args[i]);
+		i++;
 	}
 	set_exit_status(0);
 }
 
-void	export_builtin()
-void	exit_builtin()
-void	unset_builtin()
+void	exit_builtin(t_cmd *cmd)
+{
+	char	*endptr;
+	long	value;
+	int		exitcode;
+
+	if (!cmd->next && isatty(STDOUT_FILENO))
+		printf("exit\n");
+	if (!cmd->args[1])
+		exit(get_exit_status());
+	errno = 0;
+	value = ft_strtol(cmd->args[1], &endptr);
+	if (*endptr != '\0' || errno == ERANGE)
+	{
+		print_builtin_error(cmd->is_builtin, cmd->args[1]);
+		exit(2);
+	}
+	if (cmd->args[2])
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		set_exit_status(1);
+		return ;
+	}
+	exitcode = (int)(value % 256);
+	if (exitcode < 0)
+		exitcode += 256;
+	exit(exitcode);
+}

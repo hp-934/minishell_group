@@ -26,25 +26,7 @@ t_env	*init_env(void)
 	return (env);
 }
 
-int	get_info(t_env *env, char *entry)
-{
-	int	equal_len;
-	int	str_len;
-
-	if (!entry)
-		return (1);
-	str_len = ft_strlen(entry);
-	equal_len = 0;
-	while (entry[equal_len] != '=')
-		equal_len++;
-	if (entry[equal_len] != '=')
-		return (1);
-	env->name = ft_substr(entry, 0, equal_len);
-	env->value = ft_substr(entry, equal_len + 1, str_len - equal_len - 1);
-	return (0);
-}
-
-void	ft_free(t_env *env)
+void	free_env(t_env *env)
 {
 	if (!env)
 		return ;
@@ -58,28 +40,45 @@ void	ft_free(t_env *env)
 	}
 }
 
-t_env	*duplicate_envp(char **envp)
+t_env	*locate_next_node(char *prev_name, t_env *head)
 {
-	int		i;
-	t_env	*result;
 	t_env	*current;
-	t_env	*tmp;
 
-	if (!envp || !envp[0])
-		return (NULL);
-	result = init_env();
-	if (get_info(result, envp[0]))
-		return (free(result), NULL);
-	i = 1;
-	current = result;
-	while (envp[i])
+	current = NULL;
+	while (head)
 	{
-		tmp = init_env();
-		if (get_info(tmp, envp[i]))
-			return (ft_free(result), free(tmp), NULL);
-		current->next = tmp;
-		current = current->next;
-		i++;
+		if (!prev_name || prev_name[0] == '\0'
+			|| ft_strcmp(head->name, prev_name) > 0)
+		{
+			if (!current || ft_strcmp(current->name, head->name) > 0)
+				current = head;
+		}
+		head = head->next;
 	}
-	return (result);
+	return (current);
+}
+
+void	print_env_az(t_env *env)
+{
+	t_env	*node;
+	char	*prev_name;
+
+	prev_name = "";
+	node = locate_next_node(prev_name, env);
+	while (node)
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd(node->name, STDOUT_FILENO);
+		if (node->value)
+		{
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(node->value, STDOUT_FILENO);
+			ft_putendl_fd("\"", STDOUT_FILENO);
+		}
+		else
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		prev_name = node->name;
+		node = locate_next_node(prev_name, env);
+	}
+	set_exit_status(0);
 }

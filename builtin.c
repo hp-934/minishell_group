@@ -13,36 +13,64 @@
 #include "minishell.h"
 #include "exit_status.h"
 
-void	run_builtin(t_cmd *cmd, char **envp)
+int	check_builtin(char **args)
+{
+	if (!ft_strcmp(args[0], "echo") && args[1] && !ft_strcmp(args[1], "-n"))
+		return (BUILTIN_ECHO);
+	if (!ft_strcmp(args[0], "cd"))
+		return (BUILTIN_CD);
+	if (!ft_strcmp(args[0], "pwd") && args[1] == NULL)
+		return (BUILTIN_PWD);
+	if (!ft_strcmp(args[0], "export"))
+		return (BUILTIN_EXPORT);
+	if (!ft_strcmp(args[0], "unset"))
+		return (BUILTIN_UNSET);
+	if (!ft_strcmp(args[0], "env") && args[1] == NULL)
+		return (BUILTIN_ENV);
+	if (!ft_strcmp(args[0], "exit"))
+		return (BUILTIN_EXIT);
+	return (0);
+}
+
+void	run_builtin(t_cmd *cmd, t_env **env_head)
 {
 	if (cmd->is_builtin == BUILTIN_ECHO)
 		echo_builtin(cmd);
 	else if (cmd->is_builtin == BUILTIN_CD)
-		cd_builtin(cmd);
+		cd_builtin(cmd, *env_head);
 	else if (cmd->is_builtin == BUILTIN_PWD)
 		pwd_builtin();
-	// else if (cmd->is_builtin == BUILTIN_EXPORT)
-	// 	export_builtin(cmd);
-	// else if (cmd->is_builtin == BUILTIN_UNSET)
-	// 	unset_builtin(cmd);
+	else if (cmd->is_builtin == BUILTIN_EXPORT)
+		export_builtin(cmd, *env_head);
+	else if (cmd->is_builtin == BUILTIN_UNSET)
+		unset_builtin(cmd, env_head);
 	else if (cmd->is_builtin == BUILTIN_ENV)
-		env_builtin(envp);
-	// else if (cmd->is_builtin == BUILTIN_EXIT)
-	// 	exit_builtin(cmd);
+		env_builtin(*env_head);
+	else if (cmd->is_builtin == BUILTIN_EXIT)
+		exit_builtin(cmd);
 }
 
 void	echo_builtin(t_cmd *cmd)
 {
 	int	i;
+	int	n_flag;
 
-	i = 2;
-	while (cmd->args[i + 1])
+	i = 1;
+	n_flag = 0;
+	while (cmd->args[i] && ft_strcmp(cmd->args[i + 1], "-n") == 0)
 	{
-		ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
-		ft_putchar_fd(' ', STDOUT_FILENO);
+		n_flag = 1;
 		i++;
 	}
-	ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
+	while (cmd->args[i])
+	{
+		ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
+		if (cmd->args[i + 1])
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		i++;
+	}
+	if (!n_flag)
+		ft_putchar_fd('\n', STDOUT_FILENO);
 	set_exit_status(0);
 }
 
@@ -62,15 +90,17 @@ void	pwd_builtin(void)
 	set_exit_status(0);
 }
 
-void	env_builtin(char **envp)
+void	env_builtin(t_env *env)
 {
-	int			i;
-
-	i = 0;
-	while (envp[i])
+	while (env)
 	{
-		ft_putendl_fd(envp[i], STDOUT_FILENO);
-		i++;
+		if (env->value)
+		{
+			ft_putstr_fd(env->name, STDOUT_FILENO);
+			ft_putchar_fd('=', STDOUT_FILENO);
+			ft_putendl_fd(env->value, STDOUT_FILENO);
+		}
+		env = env->next;
 	}
 	set_exit_status(0);
 }
