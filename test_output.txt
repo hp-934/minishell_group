@@ -1,0 +1,4 @@
+Invalid variable
+Empty/Invalid command
+Empty/Invalid command
+hi
