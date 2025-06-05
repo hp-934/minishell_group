@@ -1,0 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   write_error.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 16:48:57 by yaepark           #+#    #+#             */
+/*   Updated: 2025/06/02 13:50:54 by yaepark          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+int	write_error(int error)
+{
+	int		fd;
+
+	fd = STDERR_FILENO;
+	if (error == ERROR_SYNTAX)
+		write(fd, "Invalid quotes or unsupported characters\n", 41);
+	else if (error == ERROR_VAR)
+		write(fd, "Invalid variable\n", 17);
+	else if (error == ERROR_PIPES)
+		write(fd, "Invalid pipe '|' syntax\n", 24);
+	else if (error == ERROR_COMMAND)
+		write(fd, "Empty/Invalid command\n", 14);
+	else if (error == ERROR_REDIRECTION)
+		write(fd, "Redirection operator error\n", 27);
+	else if (error == ERROR_FILE)
+		write(fd, "Invalid file / File error\n", 26);
+	else if (error == ERROR_HEREDOC)
+		write(fd, "Here-document error.\n", 21);
+	else
+		write(fd, "Error\n", 6);
+	return (EXIT_FAILURE);
+}

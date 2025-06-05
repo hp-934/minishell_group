@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
+#    Updated: 2025/06/02 14:25:43 by yaepark          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 CC = cc
@@ -8,22 +20,21 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 LIB = $(LIBFT) -lreadline
 
-SRC = test_executor.c \
-		builtin.c \
+SRC =	builtin.c \
 		builtin_strict.c \
 		env.c \
 		env_convert.c \
 		env_node.c \
 		execute.c \
-		exit_status.c \
 		find_cmd.c \
 		print_error.c \
 		util1.c	\
-		util2.c
+		util2.c \
+		parser.c utils.c check_syntax.c write_error.c count_args.c exit_status.c \
+		count_commands.c spaces.c quotes_variables.c redirection.c redirection1.c\
+		main.c
 
 OBJ = $(SRC:.c=.o)
-
-.PHONY: all clean fclean re libft
 
 all: libft $(NAME)
 
@@ -48,3 +59,5 @@ fclean: clean
 	@echo "Removed $(NAME)."
 
 re: fclean all
+
+.PHONY: all clean fclean re libft

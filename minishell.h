@@ -14,22 +14,45 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+# include "exit_status.h"
+
+# include <dirent.h>
+# include <errno.h>
+# include <fcntl.h>
 # include <limits.h>
-# include <stdio.h>
-# include <unistd.h>
-# include <stddef.h>
-# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
+# include <sys/ioctl.h>
+# include <sys/stat.h>
+# include <sys/types.h>
 # include <sys/wait.h>
-# include <errno.h>
+# include <termios.h>
+# include <termcap.h>
+# include <termios.h>
+# include <unistd.h>
 
-extern volatile sig_atomic_t	g_signal_received;
+# define BLANK -1
+# define ERROR_SYNTAX 1
+# define ERROR_VAR 2
+# define ERROR_PIPES 3
+# define ERROR_COMMAND 4
+# define ERROR_REDIRECTION 5
+# define ERROR_FILE 6
+# define ERROR_HEREDOC 7
+
+# define BUFFER_SIZE 100
+
+# define TMP_FILE "tmp_file.txt"
 
 typedef enum e_builtin_type
 {
-	NON_BUILTIN = 0,
+	NON_BUILTIN = 10,
 	BUILTIN_ECHO,
 	BUILTIN_CD,
 	BUILTIN_PWD,
@@ -56,6 +79,41 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+//utils
+void	free_arrays(void **array);
+void	clear_t_cmd(t_cmd **command);
+t_cmd	*t_cmd_new_empty(void);
+void	free_and_null(char **str);
+char	*fd_to_str(void);
+
+//spaces
+bool	ft_isspace(char c);
+char	*skip_spaces(char *str);
+
+//check_sytax
+int		check_syntax(char *str);
+int		toggle_quotes(char c, bool *in_single, bool *in_double);
+char	*after_quote(char *str);
+bool	is_redirection(char *str);
+
+//write_errors
+int		write_error(int error);
+
+//counting
+int		count_args(char *str);
+int		count_commands(char *str);
+
+//parsing
+t_cmd	*parser(char *str);
+t_cmd	*handle_redirections(t_cmd **commands);
+char	*remove_quotes_expand_variables(char *str);
+int		handle_heredoc(t_cmd **commands, char **args, int i);
+
+//print test
+void	print_cmd_args(t_cmd *commands);
+void	print_char_array(char **str);
+
 
 void	input_loop(void);
 
