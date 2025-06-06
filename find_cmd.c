@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 void	free_split(char **split)
 {

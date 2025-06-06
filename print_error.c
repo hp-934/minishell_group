@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 void	print_cmd_error(t_cmd *cmd)
 {

@@ -74,6 +74,7 @@ int	main(int argc, char **argv, char **envp)
 			find_path(tmp, env);
 			tmp = tmp->next;
 		}
+		// print_cmd(commands);
 		execute(commands, &env);
 		if (commands)
 			clear_t_cmd(&commands);

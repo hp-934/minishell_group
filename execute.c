@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 {

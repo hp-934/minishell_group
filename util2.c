@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 void	dup2_and_close(int fd1, int fd2)
 {

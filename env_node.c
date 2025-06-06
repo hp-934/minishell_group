@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 t_env	*search_node(char *target, t_env *env)
 {

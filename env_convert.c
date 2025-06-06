@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 int	char_to_struct(t_env *env, char *entry)
 {
@@ -99,10 +98,11 @@ char	**format_char_env(t_env *env)
 	while (i < count)
 	{
 		result[i] = struct_to_char(env);
-		if (result[i])
+		if (!result[i])
 			return (free_split(result), NULL);
 		i++;
 		env = env->next;
 	}
+	result[count] = NULL;
 	return (result);
 }

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 int	check_builtin(char **args)
 {
@@ -57,7 +56,7 @@ void	echo_builtin(t_cmd *cmd)
 
 	i = 1;
 	n_flag = 0;
-	while (cmd->args[i] && ft_strcmp(cmd->args[i + 1], "-n") == 0)
+	while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
 	{
 		n_flag = 1;
 		i++;

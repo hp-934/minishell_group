@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "exit_status.h"
 
 void	update_cd_env(t_env *env, char *old_pwd, char *new_pwd)
 {
@@ -21,7 +20,6 @@ void	update_cd_env(t_env *env, char *old_pwd, char *new_pwd)
 
 	old = ft_strdup("OLDPWD");
 	new = ft_strdup("PWD");
-	printf("patch: %s\n", old_pwd);
 	match = search_node(old, env);
 	if (match)
 		replace_node(old, old_pwd, match);
