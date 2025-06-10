@@ -101,7 +101,7 @@ void	unset_builtin(t_cmd *cmd, t_env **env_head)
 	set_exit_status(0);
 }
 
-void	exit_builtin(t_cmd *cmd)
+int	exit_builtin(t_cmd *cmd)
 {
 	char	*endptr;
 	long	value;
@@ -110,22 +110,22 @@ void	exit_builtin(t_cmd *cmd)
 	if (!cmd->next && isatty(STDOUT_FILENO))
 		printf("exit\n");
 	if (!cmd->args[1])
-		exit(get_exit_status());
+	{
+		g_signal = 1;
+		return (set_exit_status(1));
+	}
 	errno = 0;
 	value = ft_strtol(cmd->args[1], &endptr);
 	if (*endptr != '\0' || errno == ERANGE)
-	{
-		print_builtin_error(cmd->is_builtin, cmd->args[1]);
-		exit(2);
-	}
+		return (print_builtin_error(cmd->is_builtin, cmd->args[1]), 0);
 	if (cmd->args[2])
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-		set_exit_status(1);
-		return ;
+		return (set_exit_status(1));
 	}
 	exitcode = (int)(value % 256);
 	if (exitcode < 0)
 		exitcode += 256;
-	exit(exitcode);
+	g_signal = 1;
+	return (set_exit_status(exitcode));
 }

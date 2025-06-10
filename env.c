@@ -27,15 +27,17 @@ t_env	*init_env(void)
 
 void	free_env(t_env *env)
 {
-	if (!env)
-		return ;
+	t_env	*next;
+
 	while (env)
 	{
+		next = env->next;
 		if (env->name)
 			free(env->name);
 		if (env->value)
 			free(env->value);
-		env = env->next;
+		free(env);
+		env = next;
 	}
 }
 

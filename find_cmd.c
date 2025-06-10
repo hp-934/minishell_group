@@ -77,17 +77,21 @@ void	find_path(t_cmd *cmd, t_env *env)
 {
 	char	*command;
 
-	if (!cmd->args || !cmd->args[0])
-		return ;
-	command = cmd->args[0];
-	cmd->is_builtin = check_builtin(cmd->args);
-	if (ft_strchr(command, '/'))
+	while (cmd)
 	{
-		if (access(command, X_OK) == 0)
-			cmd->path = ft_strdup(command);
-		else
-			cmd->path = "-1";
+		if (!cmd->args || !cmd->args[0])
+			return ;
+		command = cmd->args[0];
+		cmd->is_builtin = check_builtin(cmd->args);
+		if (ft_strchr(command, '/'))
+		{
+			if (access(command, X_OK) == 0)
+				cmd->path = ft_strdup(command);
+			else
+				cmd->path = "-1";
+		}
+		else if (!is_pathless_builtin(cmd->is_builtin))
+			cmd->path = search_path(command, env);
+		cmd = cmd->next;
 	}
-	else if (!is_pathless_builtin(cmd->is_builtin))
-		cmd->path = search_path(command, env);
 }

@@ -12,13 +12,12 @@
 
 #include "minishell.h"
 
-static volatile sig_atomic_t	g_signal = 0;
-
-void	handle_sigquit(int sig)
-{
-	(void) sig;
-	g_signal = 1;
-}
+// void	init_signals(void)
+// {
+// 	signal(SIGINT, sigint_handler);
+// 	signal(SIGQUIT, SIG_IGN);
+// }
+volatile sig_atomic_t	g_signal = 0;
 
 void	print_cmd(t_cmd *commands)
 {
@@ -49,18 +48,17 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*str;
 	t_cmd	*commands;
-	t_cmd	*tmp;
 	t_env	*env;
 
 	(void)argc;
 	(void)argv;
-	signal(SIGQUIT, handle_sigquit);
+	// init_signals();
 	env = duplicate_envp(envp);
 	if (!env)
 		return (1);
 	while (g_signal == 0)
 	{
-		str = readline(">");
+		str = readline(">>");
 		if (!str)
 			break ;
 		add_history(str);
@@ -68,17 +66,9 @@ int	main(int argc, char **argv, char **envp)
 		free_and_null(&str);
 		if (!commands)
 			continue ;
-		tmp = commands;
-		while (tmp)
-		{
-			find_path(tmp, env);
-			tmp = tmp->next;
-		}
-		// print_cmd(commands);
+		find_path(commands, env);
 		execute(commands, &env);
-		if (commands)
-			clear_t_cmd(&commands);
+		clear_t_cmd(&commands);
 	}
-	clear_history();
-	return (0);
+	return (clear_history(), free_env(env), get_exit_status());
 }

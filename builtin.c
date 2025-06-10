@@ -28,7 +28,7 @@ int	check_builtin(char **args)
 		return (BUILTIN_ENV);
 	if (!ft_strcmp(args[0], "exit"))
 		return (BUILTIN_EXIT);
-	return (0);
+	return (NON_BUILTIN);
 }
 
 void	run_builtin(t_cmd *cmd, t_env **env_head)

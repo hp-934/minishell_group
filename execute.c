@@ -27,7 +27,7 @@ void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 		dup2_and_close(pipefd[1], STDOUT_FILENO);
 		close(pipefd[0]);
 	}
-	if (cmd->is_builtin)
+	if (cmd->is_builtin > NON_BUILTIN)
 	{
 		run_builtin(cmd, env_head);
 		exit(get_exit_status());
@@ -86,12 +86,14 @@ void	wait_and_exit(t_cmd *cmd)
 {
 	int	status;
 	int	last_exit;
+	int	had_child;
 
-	last_exit = 0;
+	last_exit = get_exit_status();
 	while (cmd)
 	{
 		if (cmd->pid > 0)
 		{
+			had_child = 1;
 			waitpid(cmd->pid, &status, 0);
 			if (WIFEXITED(status))
 				last_exit = WEXITSTATUS(status);
@@ -100,7 +102,8 @@ void	wait_and_exit(t_cmd *cmd)
 		}
 		cmd = cmd->next;
 	}
-	set_exit_status(last_exit);
+	if (had_child)
+		set_exit_status(last_exit);
 }
 
 void	execute(t_cmd *cmd, t_env **env_head)

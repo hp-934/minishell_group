@@ -38,6 +38,8 @@ void	print_builtin_error(int builtin, char *str)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		g_signal = 1;
+		set_exit_status(2);
 	}
 	else if (builtin == BUILTIN_CD)
 	{

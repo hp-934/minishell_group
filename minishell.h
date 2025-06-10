@@ -50,6 +50,8 @@
 
 # define TMP_FILE "tmp_file.txt"
 
+extern volatile sig_atomic_t	g_signal;
+
 typedef enum e_builtin_type
 {
 	NON_BUILTIN = 10,
@@ -114,7 +116,7 @@ int		handle_heredoc(t_cmd **commands, char **args, int i);
 void	print_cmd_args(t_cmd *commands);
 void	print_char_array(char **str);
 
-
+//input
 void	input_loop(void);
 
 //env
@@ -129,7 +131,7 @@ void	replace_node(char *name, char *value, t_env *env);
 void	remove_node(t_env **head_ptr, char *name);
 
 //signal
-void	signal_handler(int sig);
+void	sigint_handler(int sig);
 
 //find_cmd
 void	find_path(t_cmd *cmd, t_env *env);
@@ -148,7 +150,7 @@ void	env_builtin(t_env *env);
 void	cd_builtin(t_cmd *cmd, t_env *env);
 void	export_builtin(t_cmd *cmd, t_env *env);
 void	unset_builtin(t_cmd *cmd, t_env **env_head);
-void	exit_builtin(t_cmd *cmd);
+int		exit_builtin(t_cmd *cmd);
 
 //print_error
 void	print_cmd_error(t_cmd *cmd);

@@ -55,15 +55,17 @@ t_env	*duplicate_envp(char **envp)
 	if (!envp || !envp[0])
 		return (NULL);
 	result = init_env();
+	if (!result)
+		return (NULL);
 	if (char_to_struct(result, envp[0]))
-		return (free(result), NULL);
+		return (free_env(result), NULL);
 	i = 1;
 	current = result;
 	while (envp[i])
 	{
 		tmp = init_env();
 		if (char_to_struct(tmp, envp[i]))
-			return (free_env(result), free(tmp), NULL);
+			return (free_env(result), free_env(tmp), NULL);
 		current->next = tmp;
 		current = current->next;
 		i++;
