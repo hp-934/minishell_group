@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 14:15:57 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/10 19:53:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ int	put_variable(char *str, int fd, int i)
 	if (str[start] == '?')
 	{
 		tmp = ft_itoa(get_exit_status());
-		if (!tmp)
-			return (-1);
 		ft_putstr_fd(tmp, fd);
 		free_and_null(&tmp);
 		return (++i);
@@ -35,8 +33,9 @@ int	put_variable(char *str, int fd, int i)
 	value = getenv(tmp);
 	free_and_null(&tmp);
 	if (!value)
-		return (write_error(ERROR_VAR), -1);
-	ft_putstr_fd(value, fd);
+		ft_putstr_fd("", fd);
+	else
+		ft_putstr_fd(value, fd);
 	return (i);
 }
 
@@ -124,11 +123,7 @@ char	*remove_quotes_expand_variables(char *str)
 		if (toggle_quotes(str[i], &in_single, &in_double) == true)
 			i++;
 		else if (str[i] == '$' && !in_single)
-		{
 			i = put_variable(str, fd, i);
-			if (i < 0)
-				return (handle_invalid_variable(fd));
-		}
 		else
 			ft_putchar_fd(str[i++], fd);
 	}

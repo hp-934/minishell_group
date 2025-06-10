@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 13:24:26 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/10 20:10:12 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,12 @@ int	check_cmd_args(t_cmd *commands)
 	{
 		tmp = commands->args;
 		if (!tmp[0][0])
-			return (write_error(ERROR_COMMAND));
+			return (EXIT_FAILURE);
 		i = 0;
 		while (ft_isspace(tmp[0][i]))
 			i++;
 		if (!tmp[0][i])
-			return (write_error(ERROR_COMMAND));
+			return (EXIT_FAILURE);
 		commands = commands->next;
 	}
 	return (EXIT_SUCCESS);
