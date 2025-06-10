@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                         ::::::::           */
-/*   find_cmd.c                                          :+:    :+:           */
-/*                                                      +:+                   */
-/*   By: hogu <hogu@student.codam.nl>                  +#+                    */
-/*                                                    +#+                     */
-/*   Created: 2025/05/13 15:39:40 by hogu           #+#    #+#                */
-/*   Updated: 2025/05/13 15:39:49 by hogu           ########   odam.nl        */
+/*                                                        :::      ::::::::   */
+/*   find_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/13 15:39:40 by hogu              #+#    #+#             */
+/*   Updated: 2025/06/10 14:39:24 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	find_path(t_cmd *cmd, t_env *env)
 			if (access(command, X_OK) == 0)
 				cmd->path = ft_strdup(command);
 			else
-				cmd->path = "-1";
+				cmd->path = ft_strdup("-1");
 		}
 		else if (!is_pathless_builtin(cmd->is_builtin))
 			cmd->path = search_path(command, env);

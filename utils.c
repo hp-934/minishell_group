@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 14:00:11 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/10 14:11:21 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	print_char_array(char **str)
 
 void	free_and_null(char **str)
 {
-	if (!*str)
+	if (!str || !*str)
 		return ;
 	free(*str);
 	*str = NULL;
