@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/10 19:53:03 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:46:45 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ int	put_variable(char *str, int fd, int i)
 	char	*value;
 
 	start = ++i;
+	if (str[start] == '\0' || str[start] == '"')
+	{
+		ft_putchar_fd('$', fd);
+		return (i);
+	}
 	if (str[start] == '?')
 	{
 		tmp = ft_itoa(get_exit_status());

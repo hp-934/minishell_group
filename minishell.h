@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                         ::::::::           */
-/*   minishell.h                                         :+:    :+:           */
-/*                                                      +:+                   */
-/*   By: hogu <hogu@student.codam.nl>                  +#+                    */
-/*                                                    +#+                     */
-/*   Created: 2025/05/08 13:23:31 by hogu           #+#    #+#                */
-/*   Updated: 2025/05/08 13:23:32 by hogu           ########   odam.nl        */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
+/*   Updated: 2025/06/12 17:32:31 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,6 @@ int		is_must_parent_builtin(t_cmd *cmd);
 char	*split_name_value(char *str, char **value);
 long	ft_strtol(char *str, char **endptr);
 int		valid_identifier(char *str,int *exit_value);
+t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
 
 #endif

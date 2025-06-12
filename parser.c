@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/12 15:28:39 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/12 17:34:43 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,27 +93,27 @@ char	**tokenize_input(char *str)
 	return (args);
 }
 
-int	check_cmd_args(t_cmd *commands)
-{
-	char	**tmp;
-	int		i;
+// int	check_cmd_args(t_cmd *commands)
+// {
+// 	char	**tmp;
+// 	int		i;
 
-	if (!commands)
-		return (EXIT_FAILURE);
-	while (commands)
-	{
-		tmp = commands->args;
-		if (!tmp[0][0])
-			return (EXIT_FAILURE);
-		i = 0;
-		while (ft_isspace(tmp[0][i]))
-			i++;
-		if (!tmp[0][i])
-			return (EXIT_FAILURE);
-		commands = commands->next;
-	}
-	return (EXIT_SUCCESS);
-}
+// 	if (!commands)
+// 		return (EXIT_FAILURE);
+// 	while (commands)
+// 	{
+// 		tmp = commands->args;
+// 		if (!tmp || !tmp[0])
+// 			return (EXIT_FAILURE);
+// 		i = 0;
+// 		while (ft_isspace(tmp[0][i]))
+// 			i++;
+// 		if (!tmp[0][i])
+// 			return (EXIT_FAILURE);
+// 		commands = commands->next;
+// 	}
+// 	return (EXIT_SUCCESS);
+// }
 
 t_cmd	*parser(char *str)
 {
@@ -153,9 +153,10 @@ t_cmd	*parser(char *str)
 		i++;
 	}
 	free_arrays((void **)split);
-	if (check_cmd_args(commands))
-		clear_t_cmd(&commands);
+	// if (check_cmd_args(commands))
+	// 	clear_t_cmd(&commands);
 	if (commands)
 		commands = handle_redirections(&commands);
+	commands = remove_nul_strs_from_cmd_args(&commands);
 	return (commands);
 }
