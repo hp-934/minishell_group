@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/10 20:10:12 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/12 15:28:39 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char	**tokenize_input(char *str)
 	int		count;
 	int		i;
 	char	*tmp;
+	char	c;
 
 	count = count_args(str);
 	if (!count)
@@ -62,10 +63,21 @@ char	**tokenize_input(char *str)
 		if (!*str)
 			break ;
 		end = str;
+		if (is_redirection(end))
+		{
+			c = *end;
+			while (*end == c)
+				end++;
+			args[i++] = ft_substr(str, 0, end - str);
+			str = end;
+			continue;
+		}
 		while (*end && !ft_isspace(*end))
 		{
 			if (*end == '\'' || *end == '"')
 				end = after_quote(end);
+			else if (is_redirection(end))
+				break;
 			else
 				end++;
 		}
@@ -74,9 +86,8 @@ char	**tokenize_input(char *str)
 		free_and_null(&args[i]);
 		if (!tmp)
 			return (free_arrays((void **)args), NULL);
-		args[i] = tmp;
-		str = ++end;
-		i++;
+		args[i++] = tmp;
+		str = end;
 	}
 	args[i] = NULL;
 	return (args);

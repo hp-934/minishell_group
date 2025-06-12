@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:22:52 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/05 15:02:27 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/12 14:10:45 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	main(int argc, char **argv, char **envp)
 		free_and_null(&str);
 		if (!commands)
 			continue ;
+		print_cmd(commands);
 		find_path(commands, env);
 		// print_cmd(commands);
 		execute(commands, &env);

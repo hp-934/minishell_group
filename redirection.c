@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:39:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 14:39:17 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/12 14:26:28 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 	char	*file;
 	int		fd;
 
-	if (!commands || !*commands)
-		return (ERROR_COMMAND);
-	if (!args || args[i + 1])
+	if (!args[i + 1])
 		return (ERROR_REDIRECTION);
 	file = args[i + 1];
 	fd = open(file, O_RDONLY);
@@ -125,8 +123,8 @@ t_cmd	*handle_redirections(t_cmd **commands)
 			error = redirect(commands, array, i);
 			if (error)
 			{
-				write_error(error);
-				clear_t_cmd(&commands_top);
+				// write_error(error);
+				// clear_t_cmd(&commands_top);
 				return (commands_top);
 			}
 			i++;
