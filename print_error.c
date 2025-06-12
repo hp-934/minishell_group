@@ -45,6 +45,13 @@ void	print_builtin_error(int builtin, char *str)
 	{
 		ft_putstr_fd("cd: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory\n", STDERR_FILENO);
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	}
+	else if (builtin == BUILTIN_EXPORT)
+	{
+		ft_putstr_fd("minishell: export: '", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+		set_exit_status(1);
 	}
 }

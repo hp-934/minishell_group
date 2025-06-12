@@ -29,7 +29,7 @@ char	*split_name_value(char *str, char **value)
 	{
 		name_len = eq - str;
 		name = ft_substr(str, 0, name_len);
-		if (!name)
+		if (!name || name[0] == '\0')
 			return (*value = NULL, NULL);
 		*value = ft_strdup(eq + 1);
 		if (!*value)
@@ -39,7 +39,7 @@ char	*split_name_value(char *str, char **value)
 	{
 		*value = NULL;
 		name = strdup(str);
-		if (!name)
+		if (!name || name[0] == '\0')
 			return (NULL);
 	}
 	return (name);

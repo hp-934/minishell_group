@@ -39,12 +39,12 @@ void	cd_builtin(t_cmd *cmd, t_env *env)
 
 	if (!cmd->args[1] || !cmd->args[1][0])
 	{
-		ft_putendl_fd("cd: usage: cd <path>\n", STDERR_FILENO);
+		ft_putendl_fd("cd: usage: cd <path>", STDERR_FILENO);
 		return ((void)set_exit_status(1));
 	}
 	else if (cmd->args[2])
 	{
-		ft_putendl_fd("cd: too many arguments\n", STDERR_FILENO);
+		ft_putendl_fd("cd: too many arguments", STDERR_FILENO);
 		return ((void)set_exit_status(1));
 	}
 	old_pwd = getcwd(NULL, 0);
@@ -66,17 +66,17 @@ void	export_builtin(t_cmd *cmd, t_env *env)
 	char	*name;
 	char	*value;
 	t_env	*match;
+	int		exit_value;
 
 	i = 0;
+	exit_value = 0;
 	while (cmd->args[++i])
 	{
-		name = split_name_value(cmd->args[i], &value);
-		if (!name || name[0] == '\0')
-		{
-			free(name);
-			free(value);
+		if (!valid_identifier(cmd->args[i], &exit_value))
 			continue ;
-		}
+		name = split_name_value(cmd->args[i], &value);
+		if (!name)
+			continue ;
 		match = search_node(name, env);
 		if (match)
 			replace_node(name, value, match);
@@ -85,7 +85,7 @@ void	export_builtin(t_cmd *cmd, t_env *env)
 	}
 	if (i == 1)
 		print_env_az(env);
-	set_exit_status(0);
+	set_exit_status(exit_value);
 }
 
 void	unset_builtin(t_cmd *cmd, t_env **env_head)

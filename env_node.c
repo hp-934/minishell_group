@@ -67,3 +67,15 @@ void	remove_node(t_env **head_ptr, char *name)
 	}
 	*head_ptr = dummy.next;
 }
+
+char	*ft_getenv(char *name, t_env *env)
+{
+	t_env	*found;
+	char	*value;
+
+	found = search_node(name, env);
+	if (!found)
+		return (NULL);
+	value = found->value;
+	return (value);
+}

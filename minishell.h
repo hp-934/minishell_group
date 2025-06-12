@@ -164,5 +164,6 @@ int		is_pathless_builtin(int is_builtin);
 int		is_must_parent_builtin(t_cmd *cmd);
 char	*split_name_value(char *str, char **value);
 long	ft_strtol(char *str, char **endptr);
+int		valid_identifier(char *str,int *exit_value);
 
 #endif

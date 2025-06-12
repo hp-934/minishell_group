@@ -30,6 +30,7 @@ SRC =	builtin.c \
 		print_error.c \
 		util1.c	\
 		util2.c \
+		util3.c \
 		parser.c utils.c check_syntax.c write_error.c count_args.c exit_status.c \
 		count_commands.c spaces.c quotes_variables.c redirection.c redirection1.c\
 		main.c

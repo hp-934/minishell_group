@@ -88,6 +88,7 @@ void	wait_and_exit(t_cmd *cmd)
 	int	last_exit;
 	int	had_child;
 
+	had_child = 0;
 	last_exit = get_exit_status();
 	while (cmd)
 	{

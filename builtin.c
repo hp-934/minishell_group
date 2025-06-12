@@ -18,7 +18,7 @@ int	check_builtin(char **args)
 		return (BUILTIN_ECHO);
 	if (!ft_strcmp(args[0], "cd"))
 		return (BUILTIN_CD);
-	if (!ft_strcmp(args[0], "pwd") && args[1] == NULL)
+	if (!ft_strcmp(args[0], "pwd") && (!args[1] || args[1][0]!= '-'))
 		return (BUILTIN_PWD);
 	if (!ft_strcmp(args[0], "export"))
 		return (BUILTIN_EXPORT);
