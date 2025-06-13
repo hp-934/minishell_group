@@ -41,7 +41,7 @@ char	**split_by_pipes(char *str, int count)
 	return (split);
 }
 
-char	**tokenize_input(char *str)
+char	**tokenize_input(char *str, t_env *env)
 {
 	char	**args;
 	char	*end;
@@ -82,7 +82,7 @@ char	**tokenize_input(char *str)
 				end++;
 		}
 		args[i] = ft_substr(str, 0, end - str);
-		tmp = remove_quotes_expand_variables(args[i]);
+		tmp = remove_quotes_expand_variables(args[i], env);
 		free_and_null(&args[i]);
 		if (!tmp)
 			return (free_arrays((void **)args), NULL);
@@ -115,7 +115,7 @@ char	**tokenize_input(char *str)
 // 	return (EXIT_SUCCESS);
 // }
 
-t_cmd	*parser(char *str)
+t_cmd	*parser(char *str, t_env *env)
 {
 	char	**split;
 	t_cmd	*commands;
@@ -134,7 +134,7 @@ t_cmd	*parser(char *str)
 	i = 0;
 	while (split[i])
 	{
-		tmp->args = tokenize_input(split[i]);
+		tmp->args = tokenize_input(split[i], env);
 		if (!tmp->args)
 		{
 			clear_t_cmd(&commands);

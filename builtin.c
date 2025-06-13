@@ -18,7 +18,7 @@ int	check_builtin(char **args)
 		return (BUILTIN_ECHO);
 	if (!ft_strcmp(args[0], "cd"))
 		return (BUILTIN_CD);
-	if (!ft_strcmp(args[0], "pwd") && (!args[1] || args[1][0]!= '-'))
+	if (!ft_strcmp(args[0], "pwd") && (!args[1] || args[1][0] != '-'))
 		return (BUILTIN_PWD);
 	if (!ft_strcmp(args[0], "export"))
 		return (BUILTIN_EXPORT);
@@ -56,7 +56,7 @@ void	echo_builtin(t_cmd *cmd)
 
 	i = 1;
 	n_flag = 0;
-	while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
+	while (cmd->args[i] && is_n_variant(cmd->args[i]))
 	{
 		n_flag = 1;
 		i++;

@@ -12,10 +12,11 @@
 
 #include "minishell.h"
 
-void	dup2_and_close(int fd1, int fd2)
+void	dup2_and_close(int fd1, int fd2, int fd3)
 {
 	dup2(fd1, fd2);
 	close(fd1);
+	close(fd3);
 }
 
 char	*split_name_value(char *str, char **value)

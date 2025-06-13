@@ -35,6 +35,21 @@ int	valid_identifier(char *str, int *exit_value)
 	return (1);
 }
 
+int	is_n_variant(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] != '-')
+		return (0);
+	while (str[++i])
+	{
+		if (str[i] != 'n')
+			return (0);
+	}
+	return (1);
+}
+
 int	count_str_in_array(char **array)
 {
 	int	count;

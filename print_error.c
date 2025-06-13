@@ -16,18 +16,27 @@ void	print_cmd_error(t_cmd *cmd)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return ;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 	if (!cmd->path)
 	{
-		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		set_exit_status(127);
 	}
-	else if (ft_strcmp(cmd->path, "-1") == 0)
+	else if (ft_strcmp(cmd->path, PATH_NOTFOUND) == 0)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		set_exit_status(127);
+	}
+	else if (ft_strcmp(cmd->path, PATH_ISDIR) == 0)
+	{
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		set_exit_status(126);
+	}
+	else if (ft_strcmp(cmd->path, PATH_NOPERM) == 0)
+	{
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+		set_exit_status(126);
 	}
 }
 
@@ -54,4 +63,12 @@ void	print_builtin_error(int builtin, char *str)
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 		set_exit_status(1);
 	}
+}
+
+void	sig_write_next_line(int sig)
+{
+	if (sig == SIGINT)
+		write(STDOUT_FILENO, "\n", 1);
+	else if (sig == SIGQUIT)
+		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 }

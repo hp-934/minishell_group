@@ -28,6 +28,7 @@ SRC =	builtin.c \
 		execute.c \
 		find_cmd.c \
 		print_error.c \
+		signal.c \
 		util1.c	\
 		util2.c \
 		util3.c \

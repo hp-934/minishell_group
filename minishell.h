@@ -46,6 +46,13 @@
 # define ERROR_FILE 6
 # define ERROR_HEREDOC 7
 
+# define PATH_NOTFOUND "-1"
+# define PATH_NOPERM "-2"
+# define PATH_ISDIR "-3"
+# define ERROR_CMD_NOTFOUND 127
+# define ERROR_CMD_ISDIR 126
+# define ERROR_CMD_NOPERM 126
+
 # define BUFFER_SIZE 100
 
 # define TMP_FILE "tmp_file.txt"
@@ -107,17 +114,14 @@ int		count_args(char *str);
 int		count_commands(char *str);
 
 //parsing
-t_cmd	*parser(char *str);
+t_cmd	*parser(char *str, t_env *env);
 t_cmd	*handle_redirections(t_cmd **commands);
-char	*remove_quotes_expand_variables(char *str);
+char	*remove_quotes_expand_variables(char *str, t_env *env);
 int		handle_heredoc(t_cmd **commands, char **args, int i);
 
 //print test
 void	print_cmd_args(t_cmd *commands);
 void	print_char_array(char **str);
-
-//input
-void	input_loop(void);
 
 //env
 t_env	*init_env(void);
@@ -129,9 +133,13 @@ t_env	*search_node(char *target, t_env *env);
 void	append_node(char *name, char *value, t_env *env);
 void	replace_node(char *name, char *value, t_env *env);
 void	remove_node(t_env **head_ptr, char *name);
+char	*ft_getenv(char *name, t_env *env);
 
 //signal
+void	init_signals(void);
+void	refresh_prompt(void);
 void	sigint_handler(int sig);
+int		handle_eof(void);
 
 //find_cmd
 void	find_path(t_cmd *cmd, t_env *env);
@@ -139,7 +147,7 @@ void	free_split(char **split);
 
 //execute
 void	execute(t_cmd *cmd, t_env **env_head);
-void	dup2_and_close(int fd1, int fd2);
+void	dup2_and_close(int fd1, int fd2, int fd3);
 
 //builtin
 int		check_builtin(char **args);
@@ -155,6 +163,7 @@ int		exit_builtin(t_cmd *cmd);
 //print_error
 void	print_cmd_error(t_cmd *cmd);
 void	print_builtin_error(int builtin, char *str);
+void	sig_write_next_line(int sig);
 
 //util
 int		ft_strcmp(char *s1, char *s2);
@@ -164,7 +173,8 @@ int		is_pathless_builtin(int is_builtin);
 int		is_must_parent_builtin(t_cmd *cmd);
 char	*split_name_value(char *str, char **value);
 long	ft_strtol(char *str, char **endptr);
-int		valid_identifier(char *str,int *exit_value);
+int		valid_identifier(char *str, int *exit_value);
 t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
+int		is_n_variant(char *str);
 
 #endif

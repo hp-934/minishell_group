@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-// void	init_signals(void)
-// {
-// 	signal(SIGINT, sigint_handler);
-// 	signal(SIGQUIT, SIG_IGN);
-// }
 volatile sig_atomic_t	g_signal = 0;
 
 void	print_cmd(t_cmd *commands)
@@ -52,17 +47,17 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	// init_signals();
 	env = duplicate_envp(envp);
 	if (!env)
 		return (1);
 	while (g_signal == 0)
 	{
-		str = readline(">>");
-		if (!str)
+		init_signals();
+		str = readline(">");
+		if (!str && handle_eof())
 			break ;
 		add_history(str);
-		commands = parser(str);
+		commands = parser(str, env);
 		free_and_null(&str);
 		if (!commands)
 			continue ;

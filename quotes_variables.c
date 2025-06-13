@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	put_variable(char *str, int fd, int i)
+int	put_variable(char *str, int fd, int i, t_env *env)
 {
 	int		start;
 	char	*tmp;
@@ -35,7 +35,7 @@ int	put_variable(char *str, int fd, int i)
 		&& str[i] != '\'')
 		i++;
 	tmp = ft_substr(str, start, i - start);
-	value = getenv(tmp);
+	value = ft_getenv(tmp, env);
 	free_and_null(&tmp);
 	if (!value)
 		ft_putstr_fd("", fd);
@@ -106,7 +106,7 @@ char	*handle_invalid_variable(int fd)
 	return (NULL);
 }
 
-char	*remove_quotes_expand_variables(char *str)
+char	*remove_quotes_expand_variables(char *str, t_env *env)
 {
 	int		i;
 	int		fd;
@@ -128,7 +128,7 @@ char	*remove_quotes_expand_variables(char *str)
 		if (toggle_quotes(str[i], &in_single, &in_double) == true)
 			i++;
 		else if (str[i] == '$' && !in_single)
-			i = put_variable(str, fd, i);
+			i = put_variable(str, fd, i, env);
 		else
 			ft_putchar_fd(str[i++], fd);
 	}

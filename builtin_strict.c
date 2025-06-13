@@ -112,7 +112,7 @@ int	exit_builtin(t_cmd *cmd)
 	if (!cmd->args[1])
 	{
 		g_signal = 1;
-		return (set_exit_status(1));
+		return (set_exit_status(0));
 	}
 	errno = 0;
 	value = ft_strtol(cmd->args[1], &endptr);
