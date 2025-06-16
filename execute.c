@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-static bool	redir_error_happened = false;
-
 void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 {
 	char	**formatted_env;
@@ -23,7 +21,6 @@ void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 	signal(SIGQUIT, SIG_DFL);
 	if (cmd->redir_error)
     {
-		redir_error_happened = true;
 		errno = cmd->errno_saved;
         write_error(cmd->args[0], cmd->redir_error, cmd->bad_token);
         exit(get_exit_status());
@@ -111,14 +108,7 @@ void	wait_and_exit(t_cmd *cmd)
 			else if (WIFSIGNALED(status))
 			{
 				sig = WTERMSIG(status);
-				if (sig == SIGPIPE && !redir_error_happened)
-				{
-					ft_putstr_fd("minishell: ", STDERR_FILENO);
-                    ft_putstr_fd(p->args[0], STDERR_FILENO);
-                    ft_putendl_fd(": Broken pipe", STDERR_FILENO);
-				}
-				else
-					sig_write_next_line(sig);
+				sig_write_next_line(sig);
 				last_exit = 128 + sig;
 			}
 		}
@@ -133,7 +123,6 @@ void	execute(t_cmd *cmd, t_env **env_head)
 {
 	int		prev_pipe_out;
 
-	redir_error_happened = false;
 	prev_pipe_out = -1;
 	run_all_cmd(cmd, &prev_pipe_out, env_head);
 	wait_and_exit(cmd);
