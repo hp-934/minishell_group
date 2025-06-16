@@ -51,12 +51,12 @@ int	check_quotes(char *str)
 		else if (*str == '\\' || *str == ';')
 		{
 			if (!in_single && !in_double)
-				return (write_error(ERROR_SYNTAX));
+				return (write_error(NULL, ERROR_SYNTAX, NULL));
 		}
 		str++;
 	}
 	if (in_single || in_double)
-		return (write_error(ERROR_SYNTAX));
+		return (write_error(NULL, ERROR_SYNTAX, NULL));
 	return (EXIT_SUCCESS);
 }
 
@@ -69,7 +69,7 @@ int	check_pipes(char *str)
 	in_double = false;
 	str = skip_spaces(str);
 	if (*str == '|')
-		return (write_error(ERROR_PIPES));
+		return (write_error(NULL, ERROR_PIPES, NULL));
 	while (*str)
 	{
 		if (*str == '\'' && !in_double)
@@ -81,7 +81,7 @@ int	check_pipes(char *str)
 			str++;
 			str = skip_spaces(str);
 			if (!*str || *str == '|')
-				return (write_error(ERROR_PIPES));
+				return (write_error(NULL, ERROR_PIPES, NULL));
 		}
 		else
 			str++;

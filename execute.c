@@ -12,17 +12,27 @@
 
 #include "minishell.h"
 
+static bool	redir_error_happened = false;
+
 void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 {
 	char	**formatted_env;
-
+	
+	signal(SIGPIPE, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	if (cmd->input_fd != -1)
+	if (cmd->redir_error)
+    {
+		redir_error_happened = true;
+		errno = cmd->errno_saved;
+        write_error(cmd->args[0], cmd->redir_error, cmd->bad_token);
+        exit(get_exit_status());
+    }
+	if (cmd->input_fd > STDERR_FILENO)
 		dup2_and_close(cmd->input_fd, STDIN_FILENO, -1);
-	if (*prev_pipe_out != -1)
+	else if (*prev_pipe_out > STDERR_FILENO)
 		dup2_and_close(*prev_pipe_out, STDIN_FILENO, -1);
-	if (cmd->output_fd != -1)
+	if (cmd->output_fd > STDERR_FILENO)
 		dup2_and_close(cmd->output_fd, STDOUT_FILENO, -1);
 	else if (cmd->next)
 		dup2_and_close(pipefd[1], STDOUT_FILENO, pipefd[0]);
@@ -88,25 +98,33 @@ void	wait_and_exit(t_cmd *cmd)
 	int	status;
 	int	last_exit;
 	int	sig;
+	t_cmd	*p = cmd;
 
 	last_exit = get_exit_status();
-	while (cmd)
+	while (p)
 	{
-		if (cmd->pid > 0)
+		if (p->pid > 0)
 		{
-			waitpid(cmd->pid, &status, 0);
+			waitpid(p->pid, &status, 0);
 			if (WIFEXITED(status))
 				last_exit = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
 				sig = WTERMSIG(status);
-				sig_write_next_line(sig);
+				if (sig == SIGPIPE && !redir_error_happened)
+				{
+					ft_putstr_fd("minishell: ", STDERR_FILENO);
+                    ft_putstr_fd(p->args[0], STDERR_FILENO);
+                    ft_putendl_fd(": Broken pipe", STDERR_FILENO);
+				}
+				else
+					sig_write_next_line(sig);
 				last_exit = 128 + sig;
 			}
 		}
 		else
 			last_exit = get_exit_status();
-		cmd = cmd->next;
+		p = p->next;
 	}
 	set_exit_status(last_exit);
 }
@@ -115,6 +133,7 @@ void	execute(t_cmd *cmd, t_env **env_head)
 {
 	int		prev_pipe_out;
 
+	redir_error_happened = false;
 	prev_pipe_out = -1;
 	run_all_cmd(cmd, &prev_pipe_out, env_head);
 	wait_and_exit(cmd);

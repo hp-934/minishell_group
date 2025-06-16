@@ -45,6 +45,9 @@ void	clear_t_cmd(t_cmd **command)
 			close((*command)->input_fd);
 		if ((*command)->output_fd > STDERR_FILENO)
 			close((*command)->output_fd);
+		if ((*command)->bad_token)
+			free((*command)->bad_token);
+			(*command)->bad_token = NULL;
 		free(*command);
 		*command = temp;
 	}
@@ -66,6 +69,9 @@ t_cmd	*t_cmd_new_empty(void)
 	new->input_fd = -1;
 	new->output_fd = -1;
 	new->pid = -1;
+	new->redir_error = 0;
+	new->bad_token = NULL;
+	new->errno_saved = 0;
 	return (new);
 }
 

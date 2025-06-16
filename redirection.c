@@ -22,7 +22,7 @@ int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 	file = args[i + 1];
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		return (perror("open"), ERROR_FILE);
+		return (ERROR_FILE);
 	if ((*commands)->input_fd > STDERR_FILENO)
 		close((*commands)->input_fd);
 	(*commands)->input_fd = fd;
@@ -108,29 +108,33 @@ t_cmd	*handle_redirections(t_cmd **commands)
 	char	**array;
 	int		i;
 	int		error;
-	t_cmd	*commands_top;
-
-	if (!commands || !*commands)
-		return (NULL);
-	error = EXIT_SUCCESS;
-	commands_top = *commands;
-	while (*commands)
-	{
-		array = (*commands)->args;
-		i = 0;
-		while (array[i] && !error)
-		{
-			error = redirect(commands, array, i);
-			if (error)
-			{
-				// write_error(error);
-				// clear_t_cmd(&commands_top);
-				return (commands_top);
-			}
-			i++;
-		}
-		array = remove_redirection_from_args(array);
-		(*commands) = (*commands)->next;
-	}
-	return (commands_top);
+    t_cmd	*cmd_top;
+	
+	cmd_top = *commands;
+    while (cmd_top)
+    {
+        array = cmd_top->args;
+        i = 0;
+        while (array[i] && cmd_top->redir_error == 0)
+        {
+            error = redirect(&cmd_top, array, i);
+            if (error)
+            {
+                cmd_top->redir_error = error;
+                if (error == ERROR_REDIRECTION)
+                    cmd_top->bad_token = ft_strdup(array[i]);
+                else if (error == ERROR_FILE)
+				{
+                    cmd_top->bad_token = ft_strdup(array[i + 1]);
+					cmd_top->errno_saved = errno;
+				}
+                else
+                    cmd_top->bad_token = ft_strdup(array[i]);
+            }
+            i++;
+        }
+        cmd_top->args = remove_redirection_from_args(cmd_top->args);
+        cmd_top = cmd_top->next;
+    }
+    return *commands;
 }

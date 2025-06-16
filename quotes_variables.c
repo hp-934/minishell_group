@@ -75,7 +75,7 @@ char	*fd_to_str(void)
 
 	fd = open(TMP_FILE, O_RDONLY);
 	if (fd == -1)
-		return (write_error(ERROR_FILE), NULL);
+		return (write_error(NULL, ERROR_FILE, NULL), NULL);
 	new = NULL;
 	tmp = NULL;
 	size = read(fd, buffer, BUFFER_SIZE);
@@ -122,7 +122,7 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 	in_double = false;
 	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
 	if (fd == -1)
-		return (write_error(ERROR_FILE), NULL);
+		return (write_error(NULL, ERROR_FILE, NULL), NULL);
 	while (str[i])
 	{
 		if (toggle_quotes(str[i], &in_single, &in_double) == true)

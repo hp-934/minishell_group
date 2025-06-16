@@ -61,11 +61,11 @@ int	handle_heredoc(t_cmd **commands, char **array, int i)
 	fd = open(TMP_FILE, O_RDONLY);
 	if (fd == -1)
 		return (ERROR_FILE);
-	if ((*commands)->output_fd > STDERR_FILENO)
-		close((*commands)->output_fd);
+	// if ((*commands)->output_fd > STDERR_FILENO)
+	// 	close((*commands)->output_fd);
 	if ((*commands)->input_fd > STDERR_FILENO)
 		close((*commands)->input_fd);
 	(*commands)->input_fd = fd;
-	(*commands)->output_fd = STDOUT_FILENO;
+	// (*commands)->output_fd = STDOUT_FILENO;
 	return (EXIT_SUCCESS);
 }

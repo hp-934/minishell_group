@@ -34,6 +34,12 @@ void	print_cmd(t_cmd *commands)
 		printf("%d\n", commands->output_fd);
 		printf("---PID---\n");
 		printf("%d\n", commands->pid);
+		printf("---REDIR_ERROR---\n");
+		printf("%d\n", commands->redir_error);
+		printf("---BAD_TOKEN---\n");
+		printf("%s\n", commands->bad_token);
+		printf("---ERRNO_SAVED---\n");
+		printf("%d\n", commands->errno_saved);
 		printf("=======\n");
 		commands = commands->next;
 	}
@@ -52,7 +58,7 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	while (g_signal == 0)
 	{
-		init_signals();
+		// init_signals();
 		str = readline(">");
 		if (!str && handle_eof())
 			break ;

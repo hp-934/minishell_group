@@ -12,26 +12,26 @@
 
 #include "minishell.h"
 
-void	init_signals(void)
-{
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-}
+// void	init_signals(void)
+// {
+// 	signal(SIGINT, sigint_handler);
+// 	signal(SIGQUIT, SIG_IGN);
+// }
 
-void	refresh_prompt(void)
-{
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-}
+// // void	refresh_prompt(void)
+// // {
+// // 	write(1, "\n", 1);
+// // 	rl_replace_line("", 0);
+// // 	rl_on_new_line();
+// // 	rl_redisplay();
+// // }
 
-void	sigint_handler(int sig)
-{
-	(void)sig;
-	set_exit_status(128 + SIGINT);
-	refresh_prompt();
-}
+// void	sigint_handler(int sig)
+// {
+// 	(void)sig;
+// 	set_exit_status(128 + SIGINT);
+// 	refresh_prompt();
+// }
 
 int	handle_eof(void)
 {

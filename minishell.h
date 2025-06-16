@@ -79,6 +79,9 @@ typedef struct s_cmd
 	int				pid;
 	int				input_fd;
 	int				output_fd;
+	int				redir_error;
+	char			*bad_token;
+	int				errno_saved;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -107,8 +110,7 @@ char	*after_quote(char *str);
 bool	is_redirection(char *str);
 
 //write_errors
-int		write_error(int error);
-
+int write_error(char *cmd_name, int error_type, char *token);
 //counting
 int		count_args(char *str);
 int		count_commands(char *str);
