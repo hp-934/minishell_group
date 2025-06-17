@@ -93,7 +93,7 @@ char	**remove_redirection_from_args(char **args)
 	return (args);
 }
 
-int redirect (t_cmd **commands, char **array, int i)
+int redirect (t_cmd **commands, char **array, int i, t_env *env)
 {
 	int	result;
 
@@ -101,7 +101,7 @@ int redirect (t_cmd **commands, char **array, int i)
 	if (ft_strncmp(array[i], ">>", 2) == 0)
 		result = append_stdout_file(commands, array, i);
 	else if (ft_strncmp(array[i], "<<", 2) == 0)
-		result = handle_heredoc(commands, array, i);
+		result = handle_heredoc(commands, array, i, env);
 	else if (ft_strncmp(array[i], ">", 1) == 0)
 		result = redirect_stdout_file(commands, array, i);
 	else if (ft_strncmp(array[i], "<", 1) == 0)
@@ -109,7 +109,7 @@ int redirect (t_cmd **commands, char **array, int i)
 	return (result);
 }
 
-t_cmd	*handle_redirections(t_cmd **commands)
+t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
 {
 	char	**array;
 	int		i;
@@ -128,7 +128,7 @@ t_cmd	*handle_redirections(t_cmd **commands)
 					i++;
 					continue;
 			}
-			result = redirect(&cmd_top, array, i);
+			result = redirect(&cmd_top, array, i, env);
 			if (result)
 			{
 				if (result == SUCCESS_HEREDOC)

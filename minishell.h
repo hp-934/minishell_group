@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/17 16:47:16 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:17:06 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,10 @@ int		count_commands(char *str);
 
 //parsing
 t_cmd	*parser(char *str, t_env *env);
-t_cmd	*handle_redirections(t_cmd **commands);
+t_cmd	*handle_redirections(t_cmd **commands, t_env *env);
 char	*remove_quotes_expand_variables(char *str, t_env *env);
-int		handle_heredoc(t_cmd **commands, char **args, int i);
+int		handle_heredoc(t_cmd **commands, char **args, int i, t_env *env);
+int		put_variable(char *str, int fd, int i, t_env *env);
 
 //print test
 void	print_cmd_args(t_cmd *commands);

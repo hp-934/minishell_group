@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/17 16:50:09 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/17 17:32:35 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ bool	is_redirection(char *str)
 	return (result);
 }
 
-int	handle_heredoc(t_cmd **commands, char **array, int i)
+int	handle_heredoc(t_cmd **commands, char **array, int i, t_env *env)
 {
 	int		fd;
 	char	*delimiter;
 	char	*str;
+	int		j;
 
 	if (!array[i + 1])
 		return (ERROR_SYNTAX);
@@ -61,7 +62,15 @@ int	handle_heredoc(t_cmd **commands, char **array, int i)
 			free_and_null(&str);
 			break ;
 		}
-		ft_putstr_fd(str, fd);
+		j = 0;
+		while (str[j])
+		{
+			while (str[j] && str[j] != '$')
+				ft_putchar_fd(str[j++], fd);
+			if (str[j] == '$')
+				j = put_variable(str, fd, j, env);
+		}
+		// ft_putstr_fd(str, fd);
 		ft_putchar_fd('\n', fd);
 		free_and_null(&str);
 	}
