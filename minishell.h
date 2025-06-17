@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/12 17:32:31 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:47:16 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 # define ERROR_REDIRECTION 5
 # define ERROR_FILE 6
 # define ERROR_HEREDOC 7
+# define SUCCESS_HEREDOC 8
 
 # define PATH_NOTFOUND "-1"
 # define PATH_NOPERM "-2"

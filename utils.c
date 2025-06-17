@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 13:50:12 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/10 14:11:21 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/17 12:43:54 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,10 @@ void	clear_t_cmd(t_cmd **command)
 		if ((*command)->output_fd > STDERR_FILENO)
 			close((*command)->output_fd);
 		if ((*command)->bad_token)
+		{
 			free((*command)->bad_token);
 			(*command)->bad_token = NULL;
+		}
 		free(*command);
 		*command = temp;
 	}

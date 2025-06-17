@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirection.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 15:39:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/12 14:26:28 by yaepark          ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   redirection.c									  :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: yaepark <yaepark@student.42.fr>			+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/05/27 15:39:11 by yaepark		   #+#	#+#			 */
+/*   Updated: 2025/06/17 13:12:44 by yaepark		  ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "minishell.h"
@@ -18,7 +18,7 @@ int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 	int		fd;
 
 	if (!args[i + 1])
-		return (ERROR_REDIRECTION);
+		return (ERROR_SYNTAX);
 	file = args[i + 1];
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
@@ -35,7 +35,7 @@ int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 	int		fd;
 
 	if (!args[i + 1])
-		return (ERROR_REDIRECTION);
+		return (ERROR_SYNTAX);
 	file = args[i + 1];
 	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
@@ -52,7 +52,7 @@ int	append_stdout_file(t_cmd **commands, char **args, int i)
 	int		fd;
 
 	if (!args[i + 1])
-		return (ERROR_REDIRECTION);
+		return (ERROR_SYNTAX);
 	file = args[i + 1];
 	fd = open(file, O_RDWR | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
@@ -69,16 +69,22 @@ char	**remove_redirection_from_args(char **args)
 	int		j;
 
 	i = 0;
-	while (args[i] && args[i + 1])
+	while (args[i])
 	{
 		if (is_redirection(args[i]))
 		{
-			j = 0;
-			while (j < 2)
+
+			if (args[i][1] && args[i][0] != args[i][1])
+			{
+				i++;
+				continue;
+			}
+			j = 2;
+			while (j > 0 && args[i])
 			{
 				free_and_null(&args[i]);
 				args[i++] = ft_strdup("");
-				j++;
+				j--;
 			}
 		}
 		else
@@ -89,52 +95,59 @@ char	**remove_redirection_from_args(char **args)
 
 int redirect (t_cmd **commands, char **array, int i)
 {
-	int	error;
+	int	result;
 
-	error = EXIT_SUCCESS;
+	result = EXIT_SUCCESS;
 	if (ft_strncmp(array[i], ">>", 2) == 0)
-		error = append_stdout_file(commands, array, i);
+		result = append_stdout_file(commands, array, i);
 	else if (ft_strncmp(array[i], "<<", 2) == 0)
-		error = handle_heredoc(commands, array, i);
+		result = handle_heredoc(commands, array, i);
 	else if (ft_strncmp(array[i], ">", 1) == 0)
-		error = redirect_stdout_file(commands, array, i);
+		result = redirect_stdout_file(commands, array, i);
 	else if (ft_strncmp(array[i], "<", 1) == 0)
-		error = redirect_stdin_file(commands, array, i);
-	return (error);
+		result = redirect_stdin_file(commands, array, i);
+	return (result);
 }
 
 t_cmd	*handle_redirections(t_cmd **commands)
 {
 	char	**array;
 	int		i;
-	int		error;
-    t_cmd	*cmd_top;
-	
+	int		result;
+	t_cmd	*cmd_top;
+
 	cmd_top = *commands;
-    while (cmd_top)
-    {
-        array = cmd_top->args;
-        i = 0;
-        while (array[i] && cmd_top->redir_error == 0)
-        {
-            error = redirect(&cmd_top, array, i);
-            if (error)
-            {
-                cmd_top->redir_error = error;
-                if (error == ERROR_REDIRECTION)
-                    cmd_top->bad_token = ft_strdup(array[i]);
-                else if (error == ERROR_FILE)
+	while (cmd_top)
+	{
+		array = cmd_top->args;
+		i = 0;
+		while (array[i] && cmd_top->redir_error == 0)
+		{
+			if (is_redirection(array[i]) && array[i][1] && array[i][0] != array[i][1])
+			{
+					i++;
+					continue;
+			}
+			result = redirect(&cmd_top, array, i);
+			if (result)
+			{
+				if (result == SUCCESS_HEREDOC)
+					break;
+				cmd_top->redir_error = result;
+				if (result == ERROR_REDIRECTION)
+					cmd_top->bad_token = ft_strdup(array[i]);
+				else if (result == ERROR_FILE)
 				{
-                    cmd_top->bad_token = ft_strdup(array[i + 1]);
+					cmd_top->bad_token = ft_strdup(array[i + 1]);
 					cmd_top->errno_saved = errno;
 				}
-                else
-                    cmd_top->bad_token = ft_strdup(array[i]);
-            }
-            i++;
-        }
-        cmd_top->args = remove_redirection_from_args(cmd_top->args);
-        cmd_top = cmd_top->next;
-    }
-    return *commands;
+				else
+					cmd_top->bad_token = ft_strdup(array[i]);
+			}
+			i++;
+		}
+		array = remove_redirection_from_args(array);
+		cmd_top = cmd_top->next;
+	}
+	return *commands;
 }

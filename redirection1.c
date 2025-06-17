@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/02 14:32:34 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/17 16:50:09 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,18 @@
 
 bool	is_redirection(char *str)
 {
+	bool	result;
+
+	result = false;
 	if (ft_strncmp(str, ">>", 2) == 0)
-		return (true);
+		result = true;
 	if (ft_strncmp(str, "<<", 2) == 0)
-		return (true);
+		result = true;
 	if (ft_strncmp(str, "<", 1) == 0)
-		return (true);
+		result = true;
 	if (ft_strncmp(str, ">", 1) == 0)
-		return (true);
-	return (false);
+		result = true;
+	return (result);
 }
 
 int	handle_heredoc(t_cmd **commands, char **array, int i)
@@ -32,8 +35,13 @@ int	handle_heredoc(t_cmd **commands, char **array, int i)
 	char	*str;
 
 	if (!array[i + 1])
-		return (ERROR_REDIRECTION);
-	delimiter = array[i + 1];
+		return (ERROR_SYNTAX);
+	while (array[i])
+	{
+		if (ft_strncmp(array[i], "<<", 2) == 0 && array[i + 1])
+			delimiter = array[i + 1];
+		i++;
+	}
 	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_EXCL | O_TRUNC, 0600);
 	if (fd == -1)
 		return (ERROR_FILE);
@@ -61,11 +69,8 @@ int	handle_heredoc(t_cmd **commands, char **array, int i)
 	fd = open(TMP_FILE, O_RDONLY);
 	if (fd == -1)
 		return (ERROR_FILE);
-	// if ((*commands)->output_fd > STDERR_FILENO)
-	// 	close((*commands)->output_fd);
 	if ((*commands)->input_fd > STDERR_FILENO)
 		close((*commands)->input_fd);
 	(*commands)->input_fd = fd;
-	// (*commands)->output_fd = STDOUT_FILENO;
-	return (EXIT_SUCCESS);
+	return (SUCCESS_HEREDOC);
 }
