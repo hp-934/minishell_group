@@ -1,0 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 13:32:56 by hogu              #+#    #+#             */
+/*   Updated: 2025/06/17 17:42:00 by yaepark          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+void	init_signals(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	refresh_prompt(void)
+{
+	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
+
+void	sigint_handler(int sig)
+{
+	(void)sig;
+	set_exit_status(128 + SIGINT);
+	refresh_prompt();
+}
+
+int	handle_eof(void)
+{
+	printf("exit\n");
+	return (1);
+}
+
+void	child_signals(void)
+{
+	signal(SIGPIPE, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
