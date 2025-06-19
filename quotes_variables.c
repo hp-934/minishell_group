@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/12 17:46:45 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 15:48:17 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,13 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
 	while (str[i])
 	{
-		if (toggle_quotes(str[i], &in_single, &in_double) == true)
+		if (!in_single && !in_double && str[i] == '$' && str[i + 1] == '"')
+		{
+			i += 2;
+			while (str[i] && str[i] != '"')
+				ft_putchar_fd(str[i++], fd);
+		}
+		else if (toggle_quotes(str[i], &in_single, &in_double) == true)
 			i++;
 		else if (str[i] == '$' && !in_single)
 			i = put_variable(str, fd, i, env);
