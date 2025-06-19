@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/19 17:28:21 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 22:53:33 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,8 @@ int		count_commands(char *str);
 //parsing
 t_cmd	*parser(char *str, t_env *env);
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env);
-char	*remove_quotes_expand_variables(char *str, t_env *env);
+//char	*remove_quotes_expand_variables(char *str, t_env *env);
+char	*expand_variables(char *str, t_env *env);
 int		handle_heredoc(t_cmd **commands, char **args, int i, t_env *env);
 int		put_variable(char *str, int fd, int i, t_env *env);
 void	check_redir_error(t_cmd *cmd);
@@ -182,6 +183,7 @@ int		valid_identifier(char *str, int *exit_value);
 t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
 int		is_n_variant(char *str);
 int		count_str_in_array(char **array);
+char	*remove_quotes_str(char *str);
 
 
 #endif

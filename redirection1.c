@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/17 17:32:35 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 22:55:14 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ int	handle_heredoc(t_cmd **commands, char **array, int i, t_env *env)
 			if (str[j] == '$')
 				j = put_variable(str, fd, j, env);
 		}
-		// ft_putstr_fd(str, fd);
 		ft_putchar_fd('\n', fd);
 		free_and_null(&str);
 	}

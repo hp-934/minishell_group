@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:11:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 18:24:18 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 23:11:43 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 
 int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 {
-	char	*file;
+	//char	*file;
 	int		fd;
 
 	if (!args[i + 1])
 		return (ERROR_SYNTAX);
-	file = args[i + 1];
-	fd = open(file, O_RDONLY);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDONLY);
 	if (fd == -1)
 		return (ERROR_FILE);
 	if ((*commands)->input_fd > STDERR_FILENO)
@@ -33,13 +33,13 @@ int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 
 int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 {
-	char	*file;
+	//char	*file;
 	int		fd;
 
 	if (!args[i + 1])
 		return (ERROR_SYNTAX);
-	file = args[i + 1];
-	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		return (ERROR_FILE);
 	if ((*commands)->output_fd > STDERR_FILENO)
@@ -50,13 +50,13 @@ int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 
 int	append_stdout_file(t_cmd **commands, char **args, int i)
 {
-	char	*file;
+	//char	*file;
 	int		fd;
 
 	if (!args[i + 1])
 		return (ERROR_SYNTAX);
-	file = args[i + 1];
-	fd = open(file, O_RDWR | O_CREAT | O_APPEND, 0644);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDWR | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 		return (ERROR_FILE);
 	if ((*commands)->output_fd > STDERR_FILENO)
@@ -150,5 +150,5 @@ t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
 		array = remove_redirection_from_args(array);
 		cmd_top = cmd_top->next;
 	}
-	return (*commands);
+	return (remove_nul_strs_from_cmd_args(commands));
 }

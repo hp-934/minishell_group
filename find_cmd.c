@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 15:39:40 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/10 14:39:24 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 22:13:54 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,8 @@ void	free_split(char **split)
 
 char	**get_folders(t_env *env)
 {
-	int		i;
 	char	**folders;
 
-	i = 0;
 	while (env)
 	{
 		if (ft_strncmp(env->name, "PATH", 4) == 0)

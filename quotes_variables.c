@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 18:42:50 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 22:42:23 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char	*handle_invalid_variable(int fd)
 	return (NULL);
 }
 
-char	*remove_quotes_expand_variables(char *str, t_env *env)
+char	*expand_variables(char *str, t_env *env)
 {
 	int		i;
 	int		fd;
@@ -125,10 +125,9 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
 	if (fd == -1)
 		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
-	if ((str[0] == '\'' || str[0] == '"') && str[0] == str[1] && !str[2])
-		return(ft_putchar_fd(' ', fd), fd_to_str());
 	while (str[i])
 	{
+		toggle_quotes(str[i], &in_single, &in_double);
 		if (!in_single && !in_double && str[i] == '$' && str[i + 1] == '"')
 		{
 			i += 2;
@@ -138,8 +137,6 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 				i++;
 			continue;
 		}
-		if (toggle_quotes(str[i], &in_single, &in_double) == true)
-			i++;
 		else if (str[i] == '$' && !in_single)
 			i = put_variable(str, fd, i, env);
 		else

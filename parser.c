@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 18:42:19 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 23:09:51 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char	**tokenize_input(char *str, t_env *env)
 				end++;
 		}
 		args[i] = ft_substr(str, 0, end - str);
-		tmp = remove_quotes_expand_variables(args[i], env);
+		tmp = expand_variables(args[i], env);
 		free_and_null(&args[i]);
 		if (!tmp)
 			return (free_arrays((void **)args), NULL);
@@ -93,27 +93,55 @@ char	**tokenize_input(char *str, t_env *env)
 	return (args);
 }
 
-// int	check_cmd_args(t_cmd *commands)
-// {
-// 	char	**tmp;
-// 	int		i;
+char	*remove_quotes_str(char *str)
+{
+	int		i;
+	int		j;
+	bool	in_single;
+	bool	in_double;
+	char	*new;
 
-// 	if (!commands)
-// 		return (EXIT_FAILURE);
-// 	while (commands)
-// 	{
-// 		tmp = commands->args;
-// 		if (!tmp || !tmp[0])
-// 			return (EXIT_FAILURE);
-// 		i = 0;
-// 		while (ft_isspace(tmp[0][i]))
-// 			i++;
-// 		if (!tmp[0][i])
-// 			return (EXIT_FAILURE);
-// 		commands = commands->next;
-// 	}
-// 	return (EXIT_SUCCESS);
-// }
+	in_single = false;
+	in_double = false;
+	i = 0;
+	j = 0;
+	new = malloc(ft_strlen(str) + 1);
+	if (!new)
+		return (free_and_null(&str), NULL);
+	while(str[j])
+	{
+		if (toggle_quotes(str[j], &in_single, &in_double) == true)
+			j++;
+		else
+			new[i++] = str[j++];
+	}
+	new[i] = '\0';
+	free_and_null(&str);
+	return(new);
+}
+
+t_cmd	*remove_quotes_cmd(t_cmd **commands)
+{
+	char	**array;
+	t_cmd	*cmd_top;
+	int		i;
+
+	cmd_top = *commands;
+	while (cmd_top)
+	{
+		array = cmd_top->args;
+		i = 0;
+		while (array[i])
+		{
+			array[i] = remove_quotes_str(array[i]);
+			if (!array[i])
+				return(clear_t_cmd(commands), NULL);
+			i++;
+		}
+		cmd_top = cmd_top->next;
+	}
+	return(*commands);
+}
 
 t_cmd	*parser(char *str, t_env *env)
 {
@@ -153,9 +181,7 @@ t_cmd	*parser(char *str, t_env *env)
 		i++;
 	}
 	free_arrays((void **)split);
-	// if (check_cmd_args(commands))
-	// 	clear_t_cmd(&commands);
 	commands = handle_redirections(&commands, env);
-	commands = remove_nul_strs_from_cmd_args(&commands);
+	commands = remove_quotes_cmd(&commands);
 	return (commands);
 }
