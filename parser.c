@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 15:01:20 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:42:19 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,8 +155,7 @@ t_cmd	*parser(char *str, t_env *env)
 	free_arrays((void **)split);
 	// if (check_cmd_args(commands))
 	// 	clear_t_cmd(&commands);
-	if (commands)
-		commands = handle_redirections(&commands, env);
+	commands = handle_redirections(&commands, env);
 	commands = remove_nul_strs_from_cmd_args(&commands);
 	return (commands);
 }

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/17 17:17:06 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 17:28:21 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,5 +181,7 @@ long	ft_strtol(char *str, char **endptr);
 int		valid_identifier(char *str, int *exit_value);
 t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
 int		is_n_variant(char *str);
+int		count_str_in_array(char **array);
+
 
 #endif

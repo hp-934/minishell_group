@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 15:48:17 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:42:50 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ int	put_variable(char *str, int fd, int i, t_env *env)
 	char	*value;
 
 	start = ++i;
-	if (str[start] == '\0' || str[start] == '"')
+	if (str[start] == '\0' || str[start] == '"' || ft_isspace(str[start]))
 	{
 		ft_putchar_fd('$', fd);
-		return (i);
+		while (str[start] && ft_isspace(str[start]))
+			ft_putchar_fd(str[start++], fd);
+		return (start);
 	}
 	if (str[start] == '?')
 	{
@@ -123,6 +125,8 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
 	if (fd == -1)
 		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
+	if ((str[0] == '\'' || str[0] == '"') && str[0] == str[1] && !str[2])
+		return(ft_putchar_fd(' ', fd), fd_to_str());
 	while (str[i])
 	{
 		if (!in_single && !in_double && str[i] == '$' && str[i + 1] == '"')
@@ -130,8 +134,11 @@ char	*remove_quotes_expand_variables(char *str, t_env *env)
 			i += 2;
 			while (str[i] && str[i] != '"')
 				ft_putchar_fd(str[i++], fd);
+			if (str[i] == '"')
+				i++;
+			continue;
 		}
-		else if (toggle_quotes(str[i], &in_single, &in_double) == true)
+		if (toggle_quotes(str[i], &in_single, &in_double) == true)
 			i++;
 		else if (str[i] == '$' && !in_single)
 			i = put_variable(str, fd, i, env);
