@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:47:33 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/10 14:13:52 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/19 14:41:27 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,13 @@ static void	print_parser_error_type(int error_type, char *token)
 	{
 		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
 		ft_putstr_fd(token, STDERR_FILENO);
-		ft_putendl_fd("`", STDERR_FILENO);
+		ft_putendl_fd("'", STDERR_FILENO);
 	}
 	else if (error_type == ERROR_REDIRECTION)
 	{
 		ft_putstr_fd("parse error near `", STDERR_FILENO);
 		ft_putstr_fd(token, STDERR_FILENO);
-		ft_putendl_fd("`", STDERR_FILENO);
+		ft_putendl_fd("'", STDERR_FILENO);
 	}
 }
 

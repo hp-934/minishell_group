@@ -78,22 +78,13 @@ char	**remove_redirection_from_args(char **args)
 				i++;
 				continue ;
 			}
-			if (args[i][2] && args[i][0] == args[i][1] && args[i][1]!= args[i][2])
+			j = 2;
+			while (j > 0 && args[i])
 			{
-				i++;
-				continue ;
+				free_and_null(&args[i]);
+				args[i++] = ft_strdup("");
+				j--;
 			}
-			free_and_null(&args[i]);
-			if (args[i + 1])
-				free_and_null(&args[i + 1]);
-			j = i;
-			while (args[j + 2])
-			{
-				args[j] = args[j + 2];
-				j++;
-			}
-			args[j++] = NULL;
-			args[j] = NULL;
 		}
 		else
 			i++;
