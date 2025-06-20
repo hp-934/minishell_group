@@ -159,6 +159,7 @@ void	free_split(char **split);
 
 //execute
 void	execute(t_cmd *cmd, t_env **env_head);
+void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd);
 void	dup2_and_close(int fd1, int fd2, int fd3);
 
 //builtin

@@ -69,12 +69,35 @@ int	count_str_in_array(char **array)
 	return (count);
 }
 
+static char	**dup_non_empty_args(char **array, t_cmd **head)
+{
+	size_t	i;
+	size_t	j;
+	char	**new;
+
+	new = malloc(sizeof(char *) * (count_str_in_array(array) + 1));
+	if (!new)
+		return (clear_t_cmd(head), NULL);
+	i = -1;
+	j = 0;
+	while (array[++i])
+	{
+		if (ft_strcmp(array[i], "") != 0)
+		{
+			new[j] = ft_strdup(array[i]);
+			if (!new[j++])
+				return (free_arrays((void **)new),
+					clear_t_cmd(head), NULL);
+		}
+	}
+	new[j] = NULL;
+	return (new);
+}
+
 t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands)
 {
-	int		i;
-	int		j;
-	char	**new_array;
-	char	**array;
+	char	**old;
+	char	**new;
 	t_cmd	*tmp;
 
 	if (!commands || !*commands)
@@ -82,35 +105,15 @@ t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands)
 	tmp = *commands;
 	while (tmp)
 	{
-		array = tmp->args;
-		if (!array)
+		old = tmp->args;
+		if (old)
 		{
-			tmp = tmp->next;
-			continue ;
+			new = dup_non_empty_args(old, commands);
+			if (!new)
+				return (NULL);
+			free_arrays((void **)old);
+			tmp->args = new;
 		}
-		i = 0;
-		j = 0;
-		new_array = malloc(sizeof(char *) * (count_str_in_array(array) + 1));
-		if (!new_array)
-			return (clear_t_cmd(commands), NULL);
-		while (array[i])
-		{
-			if (ft_strcmp(array[i], "") != 0)
-			{
-				new_array[j] = ft_strdup(array[i]);
-				if (!new_array[j])
-				{
-					free_arrays((void **)new_array);
-					clear_t_cmd(commands);
-					return (NULL);
-				}
-				j++;
-			}
-			i++;
-		}
-		new_array[j] = NULL;
-		tmp->args = new_array;
-		free_arrays((void **)array);
 		tmp = tmp->next;
 	}
 	return (*commands);

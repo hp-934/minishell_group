@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   builtin_strict.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 14:32:08 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/20 14:47:56 by yaepark          ###   ########.fr       */
+/*                                                         ::::::::           */
+/*   builtin_strict.c                                    :+:    :+:           */
+/*                                                      +:+                   */
+/*   By: hogu <hogu@student.codam.nl>                  +#+                    */
+/*                                                    +#+                     */
+/*   Created: 2025/05/22 14:32:08 by hogu           #+#    #+#                */
+/*   Updated: 2025/05/22 14:32:09 by hogu           ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	cd_builtin(t_cmd *cmd, t_env *env)
 	char	*path;
 
 	if (!cmd->args[1] || !cmd->args[1][0])
-		path = getenv("HOME");
+		path = ft_getenv("HOME", env);
 	else if (cmd->args[2])
 	{
 		ft_putendl_fd("cd: too many arguments", STDERR_FILENO);
