@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/19 22:53:33 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/20 13:59:29 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ char	*after_quote(char *str);
 
 //redirection
 bool	is_redirection(char *str);
+char	**remove_redirection_from_args(char **args);
+int		redirect(t_cmd **commands, char **array, int i, t_env *env);
 
 //counting
 int		count_args(char *str);
@@ -121,11 +123,12 @@ char	**tokenize_input(char *str, t_env *env);
 char	**split_by_pipes(char *str, int count);
 t_cmd	*parser(char *str, t_env *env);
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env);
-//char	*remove_quotes_expand_variables(char *str, t_env *env);
 char	*expand_variables(char *str, t_env *env);
 int		handle_heredoc(t_cmd **commands, char **args, int i, t_env *env);
 int		put_variable(char *str, int fd, int i, t_env *env);
 void	check_redir_error(t_cmd *cmd);
+int		handle_dollar_quote(char *str, int fd, int i);
+int		init_expand_state(char *str, int *fd);
 
 //print test
 void	print_cmd_args(t_cmd *commands);

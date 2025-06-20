@@ -6,7 +6,7 @@
 #    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
-#    Updated: 2025/06/02 14:25:43 by yaepark          ###   ########.fr        #
+#    Updated: 2025/06/20 13:59:46 by yaepark          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,11 +42,12 @@ SRC =	builtin.c \
 		parser.c \
 		tokenize.c \
 		redirection1.c \
-		redirection2.c\
+		redirection2.c \
+		redirection3.c \
 		spaces.c \
 		quotes_variables1.c \
 		quotes_variables2.c \
-		main_mstest.c
+		main.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:32:08 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/20 12:25:13 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/20 14:47:56 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	cd_builtin(t_cmd *cmd, t_env *env)
 	char	*old_pwd;
 	char	*new_pwd;
 	char	*path;
-
 
 	if (!cmd->args[1] || !cmd->args[1][0])
 		path = getenv("HOME");
