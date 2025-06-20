@@ -5,93 +5,145 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/20 11:05:35 by yaepark          ###   ########.fr       */
+/*   Created: 2025/06/19 17:11:27 by yaepark           #+#    #+#             */
+/*   Updated: 2025/06/20 13:09:17 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	is_redirection(char *str)
-{
-	bool	result;
-
-	result = false;
-	if (ft_strncmp(str, ">>", 2) == 0)
-		result = true;
-	if (ft_strncmp(str, "<<", 2) == 0)
-		result = true;
-	if (ft_strncmp(str, "<", 1) == 0)
-		result = true;
-	if (ft_strncmp(str, ">", 1) == 0)
-		result = true;
-	return (result);
-}
-
-int	handle_heredoc(t_cmd **commands, char **array, int i, t_env *env)
+int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 {
 	int		fd;
-	char	*delimiter;
-	char	*str;
-	int		j;
 
-	if (!array[i + 1])
+	if (!args[i + 1])
 		return (ERROR_SYNTAX);
-	while (array[i])
-	{
-		if (ft_strncmp(array[i], "<<", 2) == 0 && array[i + 1])
-		{
-			array[i + 1] = remove_quotes_str(array[i + 1]);
-			delimiter = array[i + 1];
-		}
-		i++;
-	}
-	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_EXCL | O_TRUNC, 0600);
-	if (fd == -1)
-		return (ERROR_FILE);
-	while (1)
-	{
-		str = readline(">");
-		if (!str)
-		{
-			close(fd);
-			unlink(TMP_FILE);
-			return (ERROR_HEREDOC);
-		}
-		add_history(str);
-		if (ft_strlen(str) == ft_strlen(delimiter)
-			&& ft_strncmp(str, delimiter, ft_strlen(str)) == 0)
-		{
-			free_and_null(&str);
-			break ;
-		}
-		j = 0;
-		while (str[j])
-		{
-			while (str[j] && str[j] != '$')
-				ft_putchar_fd(str[j++], fd);
-			if (str[j] == '$')
-				j = put_variable(str, fd, j, env);
-		}
-		ft_putchar_fd('\n', fd);
-		free_and_null(&str);
-	}
-	close(fd);
-	fd = open(TMP_FILE, O_RDONLY);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDONLY);
 	if (fd == -1)
 		return (ERROR_FILE);
 	if ((*commands)->input_fd > STDERR_FILENO)
 		close((*commands)->input_fd);
 	(*commands)->input_fd = fd;
-	return (SUCCESS_HEREDOC);
+	return (EXIT_SUCCESS);
 }
 
-void	check_redir_error(t_cmd *cmd)
+int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 {
-	if (cmd->redir_error)
+	int		fd;
+
+	if (!args[i + 1])
+		return (ERROR_SYNTAX);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		return (ERROR_FILE);
+	if ((*commands)->output_fd > STDERR_FILENO)
+		close((*commands)->output_fd);
+	(*commands)->output_fd = fd;
+	return (EXIT_SUCCESS);
+}
+
+int	append_stdout_file(t_cmd **commands, char **args, int i)
+{
+	int		fd;
+
+	if (!args[i + 1])
+		return (ERROR_SYNTAX);
+	args[i + 1] = remove_quotes_str(args[i + 1]);
+	fd = open(args[i + 1], O_RDWR | O_CREAT | O_APPEND, 0644);
+	if (fd == -1)
+		return (ERROR_FILE);
+	if ((*commands)->output_fd > STDERR_FILENO)
+		close((*commands)->output_fd);
+	(*commands)->output_fd = fd;
+	return (EXIT_SUCCESS);
+}
+
+char	**remove_redirection_from_args(char **args)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (args[i])
 	{
-		errno = cmd->errno_saved;
-		print_parser_error(cmd->args[0], cmd->redir_error, cmd->bad_token);
-		exit(get_exit_status());
+		if (is_redirection(args[i]))
+		{
+			if (args[i][1] && args[i][0] != args[i][1])
+			{
+				i++;
+				continue ;
+			}
+			j = 2;
+			while (j > 0 && args[i])
+			{
+				free_and_null(&args[i]);
+				args[i++] = ft_strdup("");
+				j--;
+			}
+		}
+		else
+			i++;
 	}
+	return (args);
+}
+
+int	redirect(t_cmd **commands, char **array, int i, t_env *env)
+{
+	int	result;
+
+	result = EXIT_SUCCESS;
+	if (ft_strncmp(array[i], ">>", 2) == 0)
+		result = append_stdout_file(commands, array, i);
+	else if (ft_strncmp(array[i], "<<", 2) == 0)
+		result = handle_heredoc(commands, array, i, env);
+	else if (ft_strncmp(array[i], ">", 1) == 0)
+		result = redirect_stdout_file(commands, array, i);
+	else if (ft_strncmp(array[i], "<", 1) == 0)
+		result = redirect_stdin_file(commands, array, i);
+	return (result);
+}
+
+t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
+{
+	char	**array;
+	int		i;
+	int		result;
+	t_cmd	*cmd_top;
+
+	cmd_top = *commands;
+	while (cmd_top)
+	{
+		array = cmd_top->args;
+		i = 0;
+		while (array[i] && cmd_top->redir_error == 0)
+		{
+			if (is_redirection(array[i]) && array[i][1] && array[i][0] != array[i][1])
+			{
+				i++;
+				continue ;
+			}
+			result = redirect(&cmd_top, array, i, env);
+			if (result)
+			{
+				if (result == SUCCESS_HEREDOC)
+					break ;
+				cmd_top->redir_error = result;
+				if (result == ERROR_REDIRECTION)
+					cmd_top->bad_token = ft_strdup(array[i]);
+				else if (result == ERROR_FILE)
+				{
+					cmd_top->bad_token = ft_strdup(array[i + 1]);
+					cmd_top->errno_saved = errno;
+				}
+				else
+					cmd_top->bad_token = ft_strdup(array[i]);
+			}
+			i++;
+		}
+		array = remove_redirection_from_args(array);
+		cmd_top = cmd_top->next;
+	}
+	return (remove_nul_strs_from_cmd_args(commands));
 }

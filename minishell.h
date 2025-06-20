@@ -108,6 +108,8 @@ char	*skip_spaces(char *str);
 int		check_syntax(char *str);
 int		toggle_quotes(char c, bool *in_single, bool *in_double);
 char	*after_quote(char *str);
+
+//redirection
 bool	is_redirection(char *str);
 
 //counting
@@ -115,6 +117,8 @@ int		count_args(char *str);
 int		count_commands(char *str);
 
 //parsing
+char	**tokenize_input(char *str, t_env *env);
+char	**split_by_pipes(char *str, int count);
 t_cmd	*parser(char *str, t_env *env);
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env);
 //char	*remove_quotes_expand_variables(char *str, t_env *env);
@@ -184,6 +188,5 @@ t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
 int		is_n_variant(char *str);
 int		count_str_in_array(char **array);
 char	*remove_quotes_str(char *str);
-
 
 #endif

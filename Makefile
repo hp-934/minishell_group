@@ -22,6 +22,10 @@ LIB = $(LIBFT) -lreadline
 
 SRC =	builtin.c \
 		builtin_strict.c \
+		check_syntax1.c \
+		check_syntax2.c \
+		count_args.c \
+		count_commands.c \
 		env.c \
 		env_convert.c \
 		env_node.c \
@@ -35,8 +39,13 @@ SRC =	builtin.c \
 		util2.c \
 		util3.c \
 		util4.c \
-		parser.c check_syntax.c count_args.c \
-		count_commands.c spaces.c quotes_variables.c redirection.c redirection1.c\
+		parser.c \
+		tokenize.c \
+		redirection1.c \
+		redirection2.c\
+		spaces.c \
+		quotes_variables1.c \
+		quotes_variables2.c \
 		main_mstest.c
 
 OBJ = $(SRC:.c=.o)
