@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 22:55:14 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/20 11:05:35 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ int	handle_heredoc(t_cmd **commands, char **array, int i, t_env *env)
 	while (array[i])
 	{
 		if (ft_strncmp(array[i], "<<", 2) == 0 && array[i + 1])
+		{
+			array[i + 1] = remove_quotes_str(array[i + 1]);
 			delimiter = array[i + 1];
+		}
 		i++;
 	}
 	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_EXCL | O_TRUNC, 0600);

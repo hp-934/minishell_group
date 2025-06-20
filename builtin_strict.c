@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                         ::::::::           */
-/*   builtin_strict.c                                    :+:    :+:           */
-/*                                                      +:+                   */
-/*   By: hogu <hogu@student.codam.nl>                  +#+                    */
-/*                                                    +#+                     */
-/*   Created: 2025/05/22 14:32:08 by hogu           #+#    #+#                */
-/*   Updated: 2025/05/22 14:32:09 by hogu           ########   odam.nl        */
+/*                                                        :::      ::::::::   */
+/*   builtin_strict.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 14:32:08 by hogu              #+#    #+#             */
+/*   Updated: 2025/06/20 12:25:13 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,24 @@ void	cd_builtin(t_cmd *cmd, t_env *env)
 {
 	char	*old_pwd;
 	char	*new_pwd;
+	char	*path;
+
 
 	if (!cmd->args[1] || !cmd->args[1][0])
-	{
-		ft_putendl_fd("cd: usage: cd <path>", STDERR_FILENO);
-		return ((void)set_exit_status(1));
-	}
+		path = getenv("HOME");
 	else if (cmd->args[2])
 	{
 		ft_putendl_fd("cd: too many arguments", STDERR_FILENO);
 		return ((void)set_exit_status(1));
 	}
+	else
+		path = cmd->args[1];
 	old_pwd = getcwd(NULL, 0);
-	if (chdir(cmd->args[1]) == -1)
+	if (chdir(path) == -1)
 	{
 		if (old_pwd)
 			free(old_pwd);
-		print_builtin_error(cmd->is_builtin, cmd->args[1]);
+		print_builtin_error(cmd->is_builtin, path);
 		return ((void)set_exit_status(1));
 	}
 	new_pwd = getcwd(NULL, 0);
