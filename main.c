@@ -14,36 +14,36 @@
 
 volatile sig_atomic_t	g_signal = 0;
 
-void	print_cmd(t_cmd *commands)
-{
-	if (!commands)
-		return ;
-	while (commands)
-	{
-		printf("---ARGS---\n");
-		if (commands->args)
-			print_char_array(commands->args);
-		printf("---PATH---\n");
-		if (commands->path)
-			printf("%s\n", commands->path);
-		printf("---IS_BUILDIN---\n");
-		printf("%d\n", commands->is_builtin);
-		printf("---INPUT_FD---\n");
-		printf("%d\n", commands->input_fd);
-		printf("---OUTPUT_FD---\n");
-		printf("%d\n", commands->output_fd);
-		printf("---PID---\n");
-		printf("%d\n", commands->pid);
-		printf("---REDIR_ERROR---\n");
-		printf("%d\n", commands->redir_error);
-		printf("---BAD_TOKEN---\n");
-		printf("%s\n", commands->bad_token);
-		printf("---ERRNO_SAVED---\n");
-		printf("%d\n", commands->errno_saved);
-		printf("=======\n");
-		commands = commands->next;
-	}
-}
+// void	print_cmd(t_cmd *commands)
+// {
+// 	if (!commands)
+// 		return ;
+// 	while (commands)
+// 	{
+// 		printf("---ARGS---\n");
+// 		if (commands->args)
+// 			print_char_array(commands->args);
+// 		printf("---PATH---\n");
+// 		if (commands->path)
+// 			printf("%s\n", commands->path);
+// 		printf("---IS_BUILDIN---\n");
+// 		printf("%d\n", commands->is_builtin);
+// 		printf("---INPUT_FD---\n");
+// 		printf("%d\n", commands->input_fd);
+// 		printf("---OUTPUT_FD---\n");
+// 		printf("%d\n", commands->output_fd);
+// 		printf("---PID---\n");
+// 		printf("%d\n", commands->pid);
+// 		printf("---REDIR_ERROR---\n");
+// 		printf("%d\n", commands->redir_error);
+// 		printf("---BAD_TOKEN---\n");
+// 		printf("%s\n", commands->bad_token);
+// 		printf("---ERRNO_SAVED---\n");
+// 		printf("%d\n", commands->errno_saved);
+// 		printf("=======\n");
+// 		commands = commands->next;
+// 	}
+// }
 
 int	main(int argc, char **argv, char **envp)
 {

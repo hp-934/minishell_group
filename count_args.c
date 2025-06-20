@@ -12,10 +12,34 @@
 
 #include "minishell.h"
 
+static char	*skip_redir(char *s, int *count)
+{
+	char	c;
+
+	c = *s;
+	while (*s == c)
+		s++;
+	(*count)++;
+	return (s);
+}
+
+static char	*skip_token(char *s)
+{
+	while (*s && !ft_isspace(*s))
+	{
+		if (*s == '\'' || *s == '"')
+			s = after_quote(s);
+		else if (is_redirection(s))
+			break ;
+		else
+			s++;
+	}
+	return (s);
+}
+
 int	count_args(char *str)
 {
 	int		count;
-	char	c;
 
 	count = 0;
 	while (*str)
@@ -25,22 +49,11 @@ int	count_args(char *str)
 			break ;
 		if (is_redirection(str))
 		{
-			c = *str;
-			while (*str == c)
-				str++;
-			count++;
+			str = skip_redir(str, &count);
 			continue ;
 		}
 		count++;
-		while (*str && !ft_isspace(*str))
-		{
-			if (*str == '\'' || *str == '"')
-				str = after_quote(str);
-			else if (is_redirection(str))
-				break ;
-			else
-				str++;
-		}
+		str = skip_token(str);
 	}
 	return (count);
 }

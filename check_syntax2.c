@@ -1,21 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                         ::::::::           */
-/*   signal2.c                                           :+:    :+:           */
+/*   check_syntax2.c                                     :+:    :+:           */
 /*                                                      +:+                   */
 /*   By: hogu <hogu@student.codam.nl>                  +#+                    */
 /*                                                    +#+                     */
-/*   Created: 2025/06/19 12:05:53 by hogu           #+#    #+#                */
-/*   Updated: 2025/06/19 12:05:56 by hogu           ########   odam.nl        */
+/*   Created: 2025/06/20 12:06:07 by hogu           #+#    #+#                */
+/*   Updated: 2025/06/20 12:06:08 by hogu           ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sig_write_next_line(int sig)
+int	toggle_quotes(char c, bool *in_single, bool *in_double)
 {
-	if (sig == SIGINT)
-		write(STDOUT_FILENO, "\n", 1);
-	else if (sig == SIGQUIT)
-		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	if (c == '\'' && !*in_double)
+		*in_single = !*in_single;
+	else if (c == '"' && !*in_single)
+		*in_double = !*in_double;
+	else
+		return (false);
+	return (true);
+}
+
+char	*after_quote(char *str)
+{
+	char	quote;
+
+	quote = *str++;
+	while (*str && *str != quote)
+		str++;
+	if (*str == quote)
+		str++;
+	return (str);
 }

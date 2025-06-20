@@ -12,29 +12,6 @@
 
 #include "minishell.h"
 
-int	toggle_quotes(char c, bool *in_single, bool *in_double)
-{
-	if (c == '\'' && !*in_double)
-		*in_single = !*in_single;
-	else if (c == '"' && !*in_single)
-		*in_double = !*in_double;
-	else
-		return (false);
-	return (true);
-}
-
-char	*after_quote(char *str)
-{
-	char	quote;
-
-	quote = *str++;
-	while (*str && *str != quote)
-		str++;
-	if (*str == quote)
-		str++;
-	return (str);
-}
-
 int	check_quotes(char *str)
 {
 	bool	in_single;
@@ -89,6 +66,16 @@ int	check_pipes(char *str)
 	return (EXIT_SUCCESS);
 }
 
+static int	check_redir_target(char *str)
+{
+	str = skip_spaces(str);
+	if (*str == '|')
+		return (print_parser_error(NULL, ERROR_SYNTAX, "|"));
+	if (!*str || is_redirection(str))
+		return (print_parser_error(NULL, ERROR_SYNTAX, "newline"));
+	return (EXIT_SUCCESS);
+}
+
 int	check_redirection(char *str)
 {
 	bool	in_single;
@@ -107,17 +94,12 @@ int	check_redirection(char *str)
 			in_double = !in_double;
 		if (is_redirection(str) && !in_single && !in_double)
 		{
-			if (*str == *(str + 1))
-				str++;
-			str++;
-			str = skip_spaces(str);
-			if (*str == '|')
-				return (print_parser_error(NULL, ERROR_SYNTAX, "|"));
-			if (!*str || is_redirection(str))
-				return (print_parser_error(NULL, ERROR_SYNTAX, "newline"));
+			str += (*str == *(str + 1)) + 1;
+			if (check_redir_target(str) != EXIT_SUCCESS)
+				return (EXIT_FAILURE);
+			continue ;
 		}
-		else
-			str++;
+		str++;
 	}
 	return (EXIT_SUCCESS);
 }

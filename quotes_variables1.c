@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+static char	*extract_var_value(char *str, int *i, t_env *env)
+{
+	int		start;
+	char	*key;
+	char	*value;
+
+	start = *i;
+	while (str[*i] && !ft_isspace(str[*i]) && str[*i] != '$'
+			&& str[*i] != '"' && str[*i] != '\'')
+		(*i)++;
+	key = ft_substr(str, start, *i - start);
+	if (!key)
+		return (NULL);
+	value = ft_getenv(key, env);
+	free_and_null(&key);
+	return (value);
+}
+
 int	put_variable(char *str, int fd, int i, t_env *env)
 {
 	int		start;
@@ -33,12 +51,7 @@ int	put_variable(char *str, int fd, int i, t_env *env)
 		free_and_null(&tmp);
 		return (++i);
 	}
-	while (str[i] && !ft_isspace(str[i]) && str[i] != '$' && str[i] != '"'
-		&& str[i] != '\'')
-		i++;
-	tmp = ft_substr(str, start, i - start);
-	value = ft_getenv(tmp, env);
-	free_and_null(&tmp);
+	value = extract_var_value(str, &i, env);
 	if (!value)
 		ft_putstr_fd("", fd);
 	else
@@ -67,45 +80,66 @@ char	*create_or_join_str(char *buffer, char *str)
 	return (str);
 }
 
+static char	*read_all_from_fd(int fd)
+{
+	char	buffer[BUFFER_SIZE + 1];
+	char	*src;
+	char	*dst;
+	ssize_t	n;
+
+	dst = NULL;
+	n = read(fd, buffer, BUFFER_SIZE);
+	if (n == 0)
+		return (ft_strdup(""));
+	while (n > 0)
+	{
+		buffer[n] = '\0';
+		src = create_or_join_str(buffer, dst);
+		if (!src)
+			return (free_and_null(&dst), NULL);
+		dst = src;
+		n = read(fd, buffer, BUFFER_SIZE);
+	}
+	if (n == -1)
+		return (free_and_null(&dst), NULL);
+	if (!dst)
+		dst = ft_strdup("");
+	return (dst);
+}
+
 char	*fd_to_str(void)
 {
-	char	*new;
-	char	*tmp;
-	ssize_t	size;
-	char	buffer[BUFFER_SIZE + 1];
+	char	*res;
 	int		fd;
 
 	fd = open(TMP_FILE, O_RDONLY);
 	if (fd == -1)
 		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
-	new = NULL;
-	tmp = NULL;
-	size = read(fd, buffer, BUFFER_SIZE);
-	if (size == 0)
-		return (ft_strdup(""));
-	while (size > 0)
-	{
-		buffer[size] = '\0';
-		tmp = create_or_join_str(buffer, new);
-		if (!tmp)
-			break ;
-		new = tmp;
-		size = read(fd, buffer, BUFFER_SIZE);
-	}
+	res = read_all_from_fd(fd);
 	close(fd);
-	if (!tmp || size == -1)
-		free_and_null(&new);
 	if (unlink(TMP_FILE) != 0)
-		free_and_null(&new);
-	return (new);
+		return (free_and_null(&res), NULL);
+	return (res);
 }
 
-char	*handle_invalid_variable(int fd)
+static int	handle_dollar_quote(char *str, int fd, int i)
 {
-	close(fd);
-	if (unlink(TMP_FILE) != 0)
-		perror("Unlink failed");
-	return (NULL);
+	i += 2;
+	while (str[i] && str[i] != '"')
+		ft_putchar_fd(str[i++], fd);
+	if (str[i] == '"')
+		i++;
+	return (i);
+}
+
+static int	init_expand_state(char *str, int *fd)
+{
+	if (!str || !*str)
+		return (-1);
+	*fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
+	if (*fd == -1)
+		return (-1);
+	return (0);
 }
 
 char	*expand_variables(char *str, t_env *env)
@@ -119,29 +153,20 @@ char	*expand_variables(char *str, t_env *env)
 		return (ft_strdup(""));
 	if (!ft_strchr(str, '$') && !ft_strchr(str, '\'') && !ft_strchr(str, '"'))
 		return (ft_strdup(str));
+	if (init_expand_state(str, &fd) == -1)
+		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
 	i = 0;
 	in_single = false;
 	in_double = false;
-	fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0600);
-	if (fd == -1)
-		return (print_parser_error(NULL, ERROR_FILE, NULL), NULL);
 	while (str[i])
 	{
 		toggle_quotes(str[i], &in_single, &in_double);
 		if (!in_single && !in_double && str[i] == '$' && str[i + 1] == '"')
-		{
-			i += 2;
-			while (str[i] && str[i] != '"')
-				ft_putchar_fd(str[i++], fd);
-			if (str[i] == '"')
-				i++;
-			continue;
-		}
+			i = handle_dollar_quote(str, fd, i);
 		else if (str[i] == '$' && !in_single)
 			i = put_variable(str, fd, i, env);
 		else
 			ft_putchar_fd(str[i++], fd);
 	}
-	close(fd);
-	return (fd_to_str());
+	return (close(fd), fd_to_str());
 }
