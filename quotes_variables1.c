@@ -6,58 +6,11 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:24:41 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/20 13:53:24 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 19:36:46 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static char	*extract_var_value(char *str, int *i, t_env *env)
-{
-	int		start;
-	char	*key;
-	char	*value;
-
-	start = *i;
-	while (str[*i] && !ft_isspace(str[*i]) && str[*i] != '$'
-		&& str[*i] != '"' && str[*i] != '\'' && str[*i] != '/')
-		(*i)++;
-	key = ft_substr(str, start, *i - start);
-	if (!key)
-		return (NULL);
-	value = ft_getenv(key, env);
-	free_and_null(&key);
-	return (value);
-}
-
-int	put_variable(char *str, int fd, int i, t_env *env)
-{
-	int		start;
-	char	*tmp;
-	char	*value;
-
-	start = ++i;
-	if (str[start] == '\0' || str[start] == '"' || ft_isspace(str[start]))
-	{
-		ft_putchar_fd('$', fd);
-		while (str[start] && ft_isspace(str[start]))
-			ft_putchar_fd(str[start++], fd);
-		return (start);
-	}
-	if (str[start] == '?')
-	{
-		tmp = ft_itoa(get_exit_status());
-		ft_putstr_fd(tmp, fd);
-		free_and_null(&tmp);
-		return (++i);
-	}
-	value = extract_var_value(str, &i, env);
-	if (!value)
-		ft_putstr_fd("", fd);
-	else
-		ft_putstr_fd(value, fd);
-	return (i);
-}
 
 char	*create_or_join_str(char *buffer, char *str)
 {

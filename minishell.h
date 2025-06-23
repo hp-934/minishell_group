@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/23 16:45:03 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 18:29:34 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@
 # define ERROR_FILE 6
 # define ERROR_HEREDOC 7
 # define SUCCESS_HEREDOC 8
+# define EOF_HEREDOC 9
 
 # define PATH_NOTFOUND "-1"
 # define PATH_NOPERM "-2"
@@ -124,7 +125,7 @@ char	**split_by_pipes(char *str, int count);
 t_cmd	*parser(char *str, t_env *env);
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env);
 char	*expand_variables(char *str, t_env *env);
-int		handle_heredoc(t_cmd **commands, char **args, int i, t_env *env);
+int		handle_heredoc(t_cmd **commands, char **args, t_env *env);
 int		put_variable(char *str, int fd, int i, t_env *env);
 void	check_redir_error(t_cmd *cmd);
 int		handle_dollar_quote(char *str, int fd, int i);
