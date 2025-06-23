@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 13:58:01 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 19:12:48 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 20:43:42 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,12 @@
 int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 {
 	int		fd;
+	char	*tmp;
 
-	args[i + 1] = remove_quotes_str(args[i + 1]);
+	//args[i + 1] = remove_quotes_str(args[i + 1]);
+	tmp = remove_quotes_str(args[i + 1]);
+	free_and_null(&args[i + 1]);
+	args[i + 1] = tmp;
 	fd = open(args[i + 1], O_RDONLY);
 	if (fd == -1)
 		return (ERROR_FILE);
@@ -29,8 +33,12 @@ int	redirect_stdin_file(t_cmd **commands, char **args, int i)
 int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 {
 	int		fd;
+	char	*tmp;
 
-	args[i + 1] = remove_quotes_str(args[i + 1]);
+	//args[i + 1] = remove_quotes_str(args[i + 1]);
+	tmp = remove_quotes_str(args[i + 1]);
+	free_and_null(&args[i + 1]);
+	args[i + 1] = tmp;
 	fd = open(args[i + 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		return (ERROR_FILE);
@@ -43,8 +51,12 @@ int	redirect_stdout_file(t_cmd **commands, char **args, int i)
 int	append_stdout_file(t_cmd **commands, char **args, int i)
 {
 	int		fd;
+	char	*tmp;
 
-	args[i + 1] = remove_quotes_str(args[i + 1]);
+	//args[i + 1] = remove_quotes_str(args[i + 1]);
+	tmp = remove_quotes_str(args[i + 1]);
+	free_and_null(&args[i + 1]);
+	args[i + 1] = tmp;
 	fd = open(args[i + 1], O_RDWR | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 		return (ERROR_FILE);

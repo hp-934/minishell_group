@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 19:24:19 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 20:48:08 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 int	heredoc_input(int fd, char *delimiter, t_env *env, int j)
 {
 	char	*str;
+	char	*dequoted_delimiter;
 
 	str = readline(">");
 	if (!str)
 		return (close(fd), unlink(TMP_FILE), ERROR_HEREDOC);
 	add_history(str);
-	if (ft_strcmp(str, delimiter) == 0)
+	dequoted_delimiter = remove_quotes_str(delimiter);
+	if (ft_strcmp(str, dequoted_delimiter) == 0)
 	{
 		free_and_null(&str);
 		return (EOF_HEREDOC);
@@ -30,10 +32,16 @@ int	heredoc_input(int fd, char *delimiter, t_env *env, int j)
 		while (str[j] && str[j] != '$')
 			ft_putchar_fd(str[j++], fd);
 		if (str[j] == '$')
-			j = put_variable(str, fd, j, env);
+		{
+			if (*delimiter == '"' || *delimiter == '\'')
+				ft_putchar_fd(str[j++], fd);
+			else
+				j = put_variable(str, fd, j, env);
+		}
 	}
 	ft_putchar_fd('\n', fd);
 	free_and_null(&str);
+	free_and_null(&dequoted_delimiter);
 	return (EXIT_SUCCESS);
 }
 
@@ -72,7 +80,6 @@ char	*get_delimiter(char **array)
 	{
 		if (ft_strncmp(array[i], "<<", 2) == 0 && array[i + 1])
 		{
-			array[i + 1] = remove_quotes_str(array[i + 1]);
 			delimiter = ft_strdup(array[i + 1]);
 			remove_token_and_delimiter(&array);
 			break ;
