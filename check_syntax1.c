@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_syntax.c                                     :+:      :+:    :+:   */
+/*   check_syntax1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:47:20 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/17 16:26:27 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 16:55:53 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,6 @@ int	check_redirection(char *str)
 	in_single = false;
 	in_double = false;
 	str = skip_spaces(str);
-	if (is_redirection(str))
-		return (print_parser_error(NULL, ERROR_SYNTAX, "newline"));
 	while (*str)
 	{
 		if (*str == '\'' && !in_double)
