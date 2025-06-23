@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 20:42:20 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 21:07:38 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char	*remove_quotes_str(char *str)
 			new[i++] = str[j++];
 	}
 	new[i] = '\0';
-	//free_and_null(&str);
 	return (new);
 }
 
@@ -53,9 +52,6 @@ t_cmd	*remove_quotes_cmd(t_cmd **commands)
 		i = 0;
 		while (array[i])
 		{
-			//array[i] = remove_quotes_str(array[i]);
-			//if (!array[i])
-			//	return (clear_t_cmd(commands), NULL);
 			tmp = remove_quotes_str(array[i]);
 			free_and_null(&array[i]);
 			if (!tmp)

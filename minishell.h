@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/23 18:29:34 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 21:07:16 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,11 @@ char	*after_quote(char *str);
 bool	is_redirection(char *str);
 char	**remove_redirection_from_args(char **args);
 int		redirect(t_cmd **commands, char **array, int i, t_env *env);
+void	parse_heredoc_input(char *str, char *delimiter, int fd, t_env *env);
+int		heredoc_input(int fd, char *delimiter, t_env *env);
+void	remove_token_and_delimiter(char ***args);
+char	*get_delimiter(char **array);
+int		heredoc_output(t_cmd **commands);
 
 //counting
 int		count_args(char *str);

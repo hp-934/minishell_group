@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 11:16:08 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/23 20:19:45 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 21:14:21 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,6 @@ static int	save_token(char **dst, char *start, char *end, t_env *env)
 	return (0);
 }
 
-static char	*handle_redir_token(char *str, char **args, int *i)
-{
-	char	c;
-	char	*end;
-
-	c = *str;
-	end = str;
-	while (*end == c)
-		end++;
-	if (save_token(&args[(*i)++], str, end, NULL))
-		return (NULL);
-	return (end);
-}
-
 static char	*handle_normal_token(char *str, char **args, int *i, t_env *env)
 {
 	char	*end;
@@ -94,16 +80,25 @@ static char	*handle_normal_token(char *str, char **args, int *i, t_env *env)
 	return (end);
 }
 
-static char	*handle_heredoc_token(char *str, char **args, int *i)
+static char	*handle_redir_token(char *str, char **args, int *i)
 {
-	str = handle_redir_token(str, args, i);
-	if (!str)
-		return (free_arrays((void **)args), NULL);
-	str = skip_spaces(str);
-	if (!*str)
-		return (NULL) ;
-	str = handle_normal_token(str, args, i, NULL);
-	return (str);
+	char	c;
+	char	*end;
+
+	c = *str;
+	end = str;
+	while (*end == c)
+		end++;
+	if (save_token(&args[(*i)++], str, end, NULL))
+		return (NULL);
+	if (ft_strncmp("<<", str, 2) == 0)
+	{
+		end = skip_spaces(end);
+		if (!*end)
+			return (end);
+		end = handle_normal_token(end, args, i, NULL);
+	}
+	return (end);
 }
 
 char	**tokenize_input(char *str, t_env *env)
@@ -124,15 +119,12 @@ char	**tokenize_input(char *str, t_env *env)
 		str = skip_spaces(str);
 		if (!*str)
 			break ;
-		if (ft_strncmp("<<", str, 2) == 0)
-			str = handle_heredoc_token(str, args, &i);
-		else if (is_redirection(str))
+		if (is_redirection(str))
 			str = handle_redir_token(str, args, &i);
 		else
 			str = handle_normal_token(str, args, &i, env);
 		if (!str)
 			return (free_arrays((void **)args), NULL);
-		//printf("str: %s\n", str);
 	}
 	args[i] = NULL;
 	return (args);

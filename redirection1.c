@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:11:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/20 14:43:11 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 21:04:47 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,35 @@ t_cmd	*set_redirection_errors(t_cmd **cmd_top, int i, int result)
 	else
 		(*cmd_top)->bad_token = ft_strdup(array[i]);
 	return (*cmd_top);
+}
+
+int	handle_heredoc(t_cmd **commands, char **array, t_env *env)
+{
+	int		fd;
+	char	*delimiter;
+	int		return_value;
+
+	delimiter = get_delimiter(array);
+	if (!delimiter)
+		return (SUCCESS_HEREDOC);
+	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_TRUNC, 0600);
+	if (fd == -1)
+		return (free_and_null(&delimiter), ERROR_FILE);
+	while (1)
+	{
+		return_value = heredoc_input(fd, delimiter, env);
+		if (return_value == EOF_HEREDOC)
+			break ;
+		if (return_value == ERROR_HEREDOC)
+			return (free_and_null(&delimiter), return_value);
+	}
+	close(fd);
+	free_and_null(&delimiter);
+	if (heredoc_output(commands) == ERROR_FILE)
+		return (ERROR_FILE);
+	if (return_value == EOF_HEREDOC)
+		return (handle_heredoc(commands, array, env));
+	return (SUCCESS_HEREDOC);
 }
 
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env)

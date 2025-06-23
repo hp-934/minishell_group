@@ -6,13 +6,32 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 20:48:08 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 21:07:11 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	heredoc_input(int fd, char *delimiter, t_env *env, int j)
+void	parse_heredoc_input(char *str, char *delimiter, int fd, t_env *env)
+{
+	int	j;
+
+	j = 0;
+	while (str[j])
+	{
+		while (str[j] && str[j] != '$')
+			ft_putchar_fd(str[j++], fd);
+		if (str[j] == '$')
+		{
+			if (*delimiter == '"' || *delimiter == '\'')
+				ft_putchar_fd(str[j++], fd);
+			else
+				j = put_variable(str, fd, j, env);
+		}
+	}
+}
+
+int	heredoc_input(int fd, char *delimiter, t_env *env)
 {
 	char	*str;
 	char	*dequoted_delimiter;
@@ -27,18 +46,7 @@ int	heredoc_input(int fd, char *delimiter, t_env *env, int j)
 		free_and_null(&str);
 		return (EOF_HEREDOC);
 	}
-	while (str[j])
-	{
-		while (str[j] && str[j] != '$')
-			ft_putchar_fd(str[j++], fd);
-		if (str[j] == '$')
-		{
-			if (*delimiter == '"' || *delimiter == '\'')
-				ft_putchar_fd(str[j++], fd);
-			else
-				j = put_variable(str, fd, j, env);
-		}
-	}
+	parse_heredoc_input(str, delimiter, fd, env);
 	ft_putchar_fd('\n', fd);
 	free_and_null(&str);
 	free_and_null(&dequoted_delimiter);
@@ -100,33 +108,4 @@ int	heredoc_output(t_cmd **commands)
 		close((*commands)->input_fd);
 	(*commands)->input_fd = fd;
 	return (EXIT_SUCCESS);
-}
-
-int	handle_heredoc(t_cmd **commands, char **array, t_env *env)
-{
-	int		fd;
-	char	*delimiter;
-	int		return_value;
-
-	delimiter = get_delimiter(array);
-	if (!delimiter)
-		return (SUCCESS_HEREDOC);
-	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-		return (free_and_null(&delimiter), ERROR_FILE);
-	while (1)
-	{
-		return_value = heredoc_input(fd, delimiter, env, 0);
-		if (return_value == EOF_HEREDOC)
-			break ;
-		if (return_value == ERROR_HEREDOC)
-			return (free_and_null(&delimiter), return_value);
-	}
-	close(fd);
-	free_and_null(&delimiter);
-	if (heredoc_output(commands) == ERROR_FILE)
-		return (ERROR_FILE);
-	if (return_value == EOF_HEREDOC)
-		return (handle_heredoc(commands, array, env));
-	return (SUCCESS_HEREDOC);
 }

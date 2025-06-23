@@ -6,7 +6,7 @@
 #    By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/06 13:03:32 by yaepark           #+#    #+#              #
-#    Updated: 2025/06/02 14:25:43 by yaepark          ###   ########.fr        #
+#    Updated: 2025/06/23 21:17:56 by yaepark          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ SRC =	builtin.c \
 		spaces.c \
 		quotes_variables1.c \
 		quotes_variables2.c \
-		main_mstest.c
+		main.c
 
 OBJ = $(SRC:.c=.o)
 
