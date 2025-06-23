@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/19 23:09:51 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 16:46:23 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,14 +101,12 @@ t_cmd	*parser(char *str, t_env *env)
 {
 	char	**split;
 	t_cmd	*commands;
-	t_cmd	*tmp;
 
 	if (check_syntax(str) != EXIT_SUCCESS)
 		return (NULL);
 	commands = t_cmd_new_empty();
 	if (!commands)
 		return (NULL);
-	tmp = commands;
 	split = split_by_pipes(str, count_commands(str));
 	if (!split)
 		return (clear_t_cmd(&commands), NULL);

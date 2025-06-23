@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/20 13:59:29 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/23 16:45:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 
 # define BUFFER_SIZE 100
 
-# define TMP_FILE "tmp_file.txt"
+# define TMP_FILE "/tmp/tmp_file.txt"
 
 extern volatile sig_atomic_t	g_signal;
 
