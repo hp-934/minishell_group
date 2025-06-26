@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:48:16 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/23 19:37:01 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/26 11:54:53 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 int	handle_dollar_quote(char *str, int fd, int i)
 {
-	i += 2;
+	i++;
+	ft_putchar_fd(str[i++], fd);
 	while (str[i] && str[i] != '"')
 		ft_putchar_fd(str[i++], fd);
 	if (str[i] == '"')
-		i++;
+		ft_putchar_fd(str[i++], fd);
 	return (i);
 }
 

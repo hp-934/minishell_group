@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:11:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 21:04:47 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/26 11:53:05 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
 			if (result)
 			{
 				if (result == SUCCESS_HEREDOC)
-					break ;
+					continue ;
 				cmd_top = set_redirection_errors(&cmd_top, i, result);
 			}
 			i++;
