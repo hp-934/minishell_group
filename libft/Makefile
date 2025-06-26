@@ -65,21 +65,21 @@ OBJ_BONUS = $(SRC_BONUS:.c=.o)
 INCLUDES = -I./
 
 $(NAME): $(OBJ) $(OBJ_BONUS)
-	ar rcs $@ $^
+	@ar rcs $@ $^
 
 # bonus: $(OBJ) $(OBJ_BONUS)
 # 	ar rcs $(NAME) $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
+	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 all: $(NAME)
 
 clean:
-	rm -f $(OBJ) $(OBJ_BONUS)
+	@rm -f $(OBJ) $(OBJ_BONUS)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 
