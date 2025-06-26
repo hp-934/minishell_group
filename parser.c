@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 12:54:11 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 21:07:38 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/26 13:57:05 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,10 @@ char	*remove_quotes_str(char *str)
 	return (new);
 }
 
-t_cmd	*remove_quotes_cmd(t_cmd **commands)
+t_cmd	*remove_quotes_cmd(t_cmd **commands, int i)
 {
 	char	**array;
 	t_cmd	*cmd_top;
-	int		i;
 	char	*tmp;
 
 	cmd_top = *commands;
@@ -52,12 +51,16 @@ t_cmd	*remove_quotes_cmd(t_cmd **commands)
 		i = 0;
 		while (array[i])
 		{
-			tmp = remove_quotes_str(array[i]);
-			free_and_null(&array[i]);
-			if (!tmp)
-				return (clear_t_cmd(commands), NULL);
-			array[i] = tmp;
-			i++;
+			if (!ft_strcmp(array[0], "export") && ft_strchr(array[i], '='))
+				i++;
+			else
+			{
+				tmp = remove_quotes_str(array[i]);
+				free_and_null(&array[i]);
+				if (!tmp)
+					return (clear_t_cmd(commands), NULL);
+				array[i++] = tmp;
+			}
 		}
 		cmd_top = cmd_top->next;
 	}
@@ -116,6 +119,6 @@ t_cmd	*parser(char *str, t_env *env)
 		return (free_arrays((void **)split), clear_t_cmd(&commands), NULL);
 	free_arrays((void **)split);
 	commands = handle_redirections(&commands, env);
-	commands = remove_quotes_cmd(&commands);
+	commands = remove_quotes_cmd(&commands, 0);
 	return (commands);
 }

@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:48:16 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/26 11:54:53 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/26 13:55:03 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ static char	*extract_var_value(char *str, int *i, t_env *env)
 
 int	put_variable(char *str, int fd, int i, t_env *env)
 {
-	int		start;
+	int		bgn;
 	char	*tmp;
 	char	*value;
 
-	start = ++i;
-	if (str[start] == '\0' || str[start] == '"' || ft_isspace(str[start]))
+	bgn = ++i;
+	if (!str[bgn] || str[bgn] == '"' || ft_isspace(str[bgn]) || str[bgn] == '/')
 	{
 		ft_putchar_fd('$', fd);
-		while (str[start] && ft_isspace(str[start]))
-			ft_putchar_fd(str[start++], fd);
-		return (start);
+		while (str[bgn] && ft_isspace(str[bgn]))
+			ft_putchar_fd(str[bgn++], fd);
+		return (bgn);
 	}
-	if (str[start] == '?')
+	if (str[bgn] == '?')
 	{
 		tmp = ft_itoa(get_exit_status());
 		ft_putstr_fd(tmp, fd);
