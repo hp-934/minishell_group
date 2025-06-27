@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                         ::::::::           */
-/*   heredoc.c                                           :+:    :+:           */
-/*                                                      +:+                   */
-/*   By: hogu <hogu@student.codam.nl>                  +#+                    */
-/*                                                    +#+                     */
-/*   Created: 2025/06/26 13:22:32 by hogu           #+#    #+#                */
-/*   Updated: 2025/06/26 13:22:33 by hogu           ########   odam.nl        */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/26 13:22:32 by hogu              #+#    #+#             */
+/*   Updated: 2025/06/27 13:49:49 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	heredoc_input(int fd, char *delimiter, t_env *env)
 	if (ft_strcmp(str, dequoted_delimiter) == 0)
 	{
 		free_and_null(&str);
+		free_and_null(&dequoted_delimiter);
 		return (EOF_HEREDOC);
 	}
 	parse_heredoc_input(str, delimiter, fd, env);
