@@ -56,35 +56,6 @@ t_cmd	*set_redirection_errors(t_cmd **cmd_top, int i, int result)
 	return (*cmd_top);
 }
 
-int	handle_heredoc(t_cmd **commands, char **array, t_env *env)
-{
-	int		fd;
-	char	*delimiter;
-	int		return_value;
-
-	delimiter = get_delimiter(array);
-	if (!delimiter)
-		return (SUCCESS_HEREDOC);
-	fd = open(TMP_FILE, O_RDWR | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-		return (free_and_null(&delimiter), ERROR_FILE);
-	while (1)
-	{
-		return_value = heredoc_input(fd, delimiter, env);
-		if (return_value == EOF_HEREDOC)
-			break ;
-		if (return_value == ERROR_HEREDOC)
-			return (free_and_null(&delimiter), return_value);
-	}
-	close(fd);
-	free_and_null(&delimiter);
-	if (heredoc_output(commands) == ERROR_FILE)
-		return (ERROR_FILE);
-	if (return_value == EOF_HEREDOC)
-		return (handle_heredoc(commands, array, env));
-	return (SUCCESS_HEREDOC);
-}
-
 t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
 {
 	char	**array;
@@ -96,17 +67,16 @@ t_cmd	*handle_redirections(t_cmd **commands, t_env *env)
 	while (cmd_top)
 	{
 		array = cmd_top->args;
-		i = 0;
-		while (array[i] && cmd_top->redir_error == 0)
+		i = -1;
+		while (array[++i] && cmd_top->redir_error == 0)
 		{
 			result = redirect(&cmd_top, array, i, env);
-			if (result)
-			{
-				if (result == SUCCESS_HEREDOC)
-					break ;
+			if (result && result == SUCCESS_HEREDOC)
+				continue ;
+			else if (result && result == ERROR_HEREDOC)
+				return (clear_t_cmd(commands), NULL);
+			else if (result)
 				cmd_top = set_redirection_errors(&cmd_top, i, result);
-			}
-			i++;
 		}
 		array = remove_redirection_from_args(array);
 		cmd_top = cmd_top->next;

@@ -116,6 +116,8 @@ t_cmd	*parser(char *str, t_env *env)
 		return (free_arrays((void **)split), clear_t_cmd(&commands), NULL);
 	free_arrays((void **)split);
 	commands = handle_redirections(&commands, env);
+	if (!commands)
+		return (NULL);
 	commands = remove_quotes_cmd(&commands);
 	return (commands);
 }

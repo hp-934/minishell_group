@@ -12,47 +12,6 @@
 
 #include "minishell.h"
 
-void	parse_heredoc_input(char *str, char *delimiter, int fd, t_env *env)
-{
-	int	j;
-
-	j = 0;
-	while (str[j])
-	{
-		while (str[j] && str[j] != '$')
-			ft_putchar_fd(str[j++], fd);
-		if (str[j] == '$')
-		{
-			if (*delimiter == '"' || *delimiter == '\'')
-				ft_putchar_fd(str[j++], fd);
-			else
-				j = put_variable(str, fd, j, env);
-		}
-	}
-}
-
-int	heredoc_input(int fd, char *delimiter, t_env *env)
-{
-	char	*str;
-	char	*dequoted_delimiter;
-
-	str = readline(">");
-	if (!str)
-		return (close(fd), unlink(TMP_FILE), ERROR_HEREDOC);
-	add_history(str);
-	dequoted_delimiter = remove_quotes_str(delimiter);
-	if (ft_strcmp(str, dequoted_delimiter) == 0)
-	{
-		free_and_null(&str);
-		return (EOF_HEREDOC);
-	}
-	parse_heredoc_input(str, delimiter, fd, env);
-	ft_putchar_fd('\n', fd);
-	free_and_null(&str);
-	free_and_null(&dequoted_delimiter);
-	return (EXIT_SUCCESS);
-}
-
 void	remove_token_and_delimiter(char ***args)
 {
 	int		i;

@@ -83,3 +83,25 @@ void	print_env_az(t_env *env)
 	}
 	set_exit_status(0);
 }
+
+void	update_cd_env(t_env *env, char *old_pwd, char *new_pwd)
+{
+	t_env	*match;
+	char	*key;
+	char	*val;
+
+	key = ft_strdup("OLDPWD");
+	val = ft_strdup(old_pwd);
+	match = search_node(key, env);
+	if (match)
+		replace_node(key, val, match);
+	else
+		append_node(key, val, env);
+	key = ft_strdup("PWD");
+	val = ft_strdup(new_pwd);
+	match = search_node(key, env);
+	if (match)
+		replace_node(key, val, match);
+	else
+		append_node(key, val, env);
+}

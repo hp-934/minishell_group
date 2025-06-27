@@ -16,7 +16,6 @@ void	check_path(t_cmd *cmd)
 {
 	if (cmd->is_builtin == NON_BUILTIN
 		&& (!cmd->path || !ft_strcmp(cmd->path, PATH_ISDIR)
-			|| !ft_strcmp(cmd->path, PATH_NOPERM)
 			|| !ft_strcmp(cmd->path, PATH_NOTFOUND)))
 	{
 		print_cmd_error(cmd);
@@ -30,10 +29,23 @@ static void	exec_external(t_cmd *cmd, t_env **env_head)
 
 	check_path(cmd);
 	formatted_env = format_char_env(*env_head);
-	execve(cmd->path, cmd->args, formatted_env);
-	perror("execve failed");
+	if (execve(cmd->path, cmd->args, formatted_env) == -1)
+	{
+		if (errno == EACCES)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+			ft_putendl_fd(": Permission denied", STDERR_FILENO);
+			set_exit_status(126);
+			free_split(formatted_env);
+			exit(126);
+		}
+		else
+			perror("minishell");
+	}
+	set_exit_status(126);
 	free_split(formatted_env);
-	exit(1);
+	exit(127);
 }
 
 void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)

@@ -38,7 +38,7 @@ void	run_builtin(t_cmd *cmd, t_env **env_head)
 	else if (cmd->is_builtin == BUILTIN_CD)
 		cd_builtin(cmd, *env_head);
 	else if (cmd->is_builtin == BUILTIN_PWD)
-		pwd_builtin();
+		pwd_builtin(*env_head);
 	else if (cmd->is_builtin == BUILTIN_EXPORT)
 		export_builtin(cmd, *env_head);
 	else if (cmd->is_builtin == BUILTIN_UNSET)
@@ -73,10 +73,18 @@ void	echo_builtin(t_cmd *cmd)
 	set_exit_status(0);
 }
 
-void	pwd_builtin(void)
+void	pwd_builtin(t_env *env)
 {
+	char	*logical;
 	char	*cwd;
 
+	logical = ft_getenv("PWD", env);
+	if (logical)
+	{
+		ft_putendl_fd(logical, STDOUT_FILENO);
+		set_exit_status(0);
+		return ;
+	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

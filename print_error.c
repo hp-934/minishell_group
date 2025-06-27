@@ -67,6 +67,14 @@ void	print_builtin_error(int builtin, char *str)
 	}
 }
 
+void	print_unset_error(char *str)
+{
+	ft_putstr_fd("minishell: unset: ", STDERR_FILENO);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putendl_fd(": invalid option", STDERR_FILENO);
+	set_exit_status(2);
+}
+
 static void	print_parser_error_type(int error_type, char *token)
 {
 	if (!token)

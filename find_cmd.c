@@ -60,12 +60,12 @@ char	*search_path(char *cmd, t_env *env)
 	{
 		temp = ft_strjoin(folders[i], "/");
 		if (!temp)
-			return (free_split(folders), NULL);
+			break ;
 		path = ft_strjoin(temp, cmd);
-		if (!path)
-			return (free_split(folders), NULL);
 		free(temp);
-		if (access(path, X_OK) == 0)
+		if (!path)
+			break ;
+		if (access(path, F_OK) == 0)
 			return (free_split(folders), path);
 		free(path);
 		i++;
@@ -81,10 +81,8 @@ void	slashed_path(char *str, t_cmd *cmd)
 	{
 		if (S_ISDIR(st.st_mode))
 			cmd->path = ft_strdup(PATH_ISDIR);
-		else if (S_ISREG(st.st_mode) && access(str, X_OK) == 0)
-			cmd->path = ft_strdup(str);
 		else
-			cmd->path = ft_strdup(PATH_NOPERM);
+			cmd->path = ft_strdup(str);
 	}
 	else
 		cmd->path = ft_strdup(PATH_NOTFOUND);
@@ -97,7 +95,10 @@ void	find_path(t_cmd *cmd, t_env *env)
 	while (cmd)
 	{
 		if (!cmd->args || !cmd->args[0])
-			return ;
+		{
+			cmd = cmd->next;
+			continue ;
+		}
 		command = cmd->args[0];
 		cmd->is_builtin = check_builtin(cmd->args);
 		if (ft_strchr(command, '/'))

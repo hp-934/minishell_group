@@ -21,6 +21,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 LIB = $(LIBFT) -lreadline
 
 SRC =	builtin.c \
+		builtin_cd.c \
 		builtin_strict.c \
 		check_syntax1.c \
 		check_syntax2.c \
@@ -33,6 +34,7 @@ SRC =	builtin.c \
 		execute2.c \
 		exit_status.c \
 		find_cmd.c \
+		heredoc.c \
 		print_error.c \
 		signal1.c \
 		signal2.c \
@@ -48,7 +50,7 @@ SRC =	builtin.c \
 		spaces.c \
 		quotes_variables1.c \
 		quotes_variables2.c \
-		main.c
+		main_mstest.c
 
 OBJ = $(SRC:.c=.o)
 

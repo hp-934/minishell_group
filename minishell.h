@@ -47,6 +47,7 @@
 # define ERROR_HEREDOC 7
 # define SUCCESS_HEREDOC 8
 # define EOF_HEREDOC 9
+# define INT_HEREDOC 10
 
 # define PATH_NOTFOUND "-1"
 # define PATH_NOPERM "-2"
@@ -115,6 +116,7 @@ bool	is_redirection(char *str);
 char	**remove_redirection_from_args(char **args);
 int		redirect(t_cmd **commands, char **array, int i, t_env *env);
 void	parse_heredoc_input(char *str, char *delimiter, int fd, t_env *env);
+int		handle_heredoc(t_cmd **commands, char **array, t_env *env);
 int		heredoc_input(int fd, char *delimiter, t_env *env);
 void	remove_token_and_delimiter(char ***args);
 char	*get_delimiter(char **array);
@@ -151,6 +153,7 @@ void	append_node(char *name, char *value, t_env *env);
 void	replace_node(char *name, char *value, t_env *env);
 void	remove_node(t_env **head_ptr, char *name);
 char	*ft_getenv(char *name, t_env *env);
+void	update_cd_env(t_env *env, char *old_pwd, char *new_pwd);
 
 //signal
 void	init_signals(void);
@@ -172,7 +175,7 @@ void	dup2_and_close(int fd1, int fd2, int fd3);
 int		check_builtin(char **args);
 void	run_builtin(t_cmd *cmd, t_env **env_head);
 void	echo_builtin(t_cmd *cmd);
-void	pwd_builtin(void);
+void	pwd_builtin(t_env *env);
 void	env_builtin(t_env *env);
 void	cd_builtin(t_cmd *cmd, t_env *env);
 void	export_builtin(t_cmd *cmd, t_env *env);
@@ -184,6 +187,7 @@ void	print_cmd_error(t_cmd *cmd);
 void	print_builtin_error(int builtin, char *str);
 void	sig_write_next_line(int sig);
 int		print_parser_error(char *cmd_name, int error_type, char *token);
+void	print_unset_error(char *str);
 
 //util
 int		ft_strcmp(char *s1, char *s2);
