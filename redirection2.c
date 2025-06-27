@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 14:22:27 by yaepark           #+#    #+#             */
-/*   Updated: 2025/06/23 21:07:11 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/06/27 16:03:34 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,10 @@ char	*get_delimiter(char **array)
 	return (delimiter);
 }
 
-int	heredoc_output(t_cmd **commands)
+int	heredoc_output(t_cmd **commands, int *pipefd)
 {
-	int		fd;
-
-	fd = open(TMP_FILE, O_RDONLY);
-	if (fd == -1)
-		return (ERROR_FILE);
 	if ((*commands)->input_fd > STDERR_FILENO)
 		close((*commands)->input_fd);
-	(*commands)->input_fd = fd;
+	(*commands)->input_fd = pipefd[0];
 	return (EXIT_SUCCESS);
 }
