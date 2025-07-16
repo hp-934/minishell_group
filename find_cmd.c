@@ -94,8 +94,9 @@ void	find_path(t_cmd *cmd, t_env *env)
 
 	while (cmd)
 	{
-		if (!cmd->args || !cmd->args[0])
+		if (!cmd->args || !cmd->args[0] || cmd->args[0][0] == '\0')
 		{
+			cmd->path = NULL;
 			cmd = cmd->next;
 			continue ;
 		}

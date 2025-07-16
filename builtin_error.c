@@ -28,10 +28,18 @@ void	print_exit_error(char *str, int msg)
 
 void	print_cd_error(char *str)
 {
+	struct stat	st;
+
 	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 	ft_putstr_fd(str, STDERR_FILENO);
 	if (errno == EACCES)
 		ft_putendl_fd(": Permission denied", STDERR_FILENO);
+	else if (errno == ENOTDIR)
+		ft_putendl_fd(": Not a directory", STDERR_FILENO);
+	else if (errno == ENAMETOOLONG)
+		ft_putendl_fd(": File name too long", STDERR_FILENO);
+	else if (stat(str, &st) == 0 && !S_ISDIR(st.st_mode))
+		ft_putendl_fd(": Not a directory", STDERR_FILENO);
 	else
 		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
 }

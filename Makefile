@@ -13,7 +13,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -43,7 +43,7 @@ SRC =	builtin_all.c \
 		signal2.c \
 		util1.c	\
 		util3.c \
-		util4.c \
+		util2.c \
 		parser.c \
 		tokenize.c \
 		redirection1.c \
@@ -52,7 +52,7 @@ SRC =	builtin_all.c \
 		spaces.c \
 		quotes_variables1.c \
 		quotes_variables2.c \
-		main_mstest.c
+		main.c
 
 OBJ = $(SRC:.c=.o)
 

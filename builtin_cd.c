@@ -24,9 +24,11 @@ static char	*cd_get_path(t_cmd *cmd, t_env *env, int *print_path)
 		set_exit_status(1);
 		return (NULL);
 	}
-	if (!cmd->args[1] || !cmd->args[1][0] || !ft_strcmp(cmd->args[1], "~")
+	if (!cmd->args[1] || !ft_strcmp(cmd->args[1], "~")
 		|| !ft_strcmp(cmd->args[1], "--"))
 		path = ft_getenv("HOME", env);
+	else if (!cmd->args[1][0])
+		return (set_exit_status(0), NULL);
 	else if (!ft_strcmp(cmd->args[1], "-"))
 	{
 		if (print_path)

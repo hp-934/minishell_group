@@ -40,10 +40,9 @@ char	*struct_to_char(t_env *env)
 	if (!tmp)
 		return (NULL);
 	result = ft_strjoin(tmp, env->value);
-	free(tmp);
 	if (!result)
 		return (free(tmp), NULL);
-	return (result);
+	return (free(tmp), result);
 }
 
 t_env	*duplicate_envp(char **envp)

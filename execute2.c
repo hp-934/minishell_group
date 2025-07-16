@@ -48,6 +48,18 @@ static void	exec_external(t_cmd *cmd, t_env **env_head)
 	exit(127);
 }
 
+static void	close_all_nonstd_fd(void)
+{
+	int	fd;
+
+	fd = 3;
+	while (fd < 1024)
+	{
+		close(fd);
+		fd++;
+	}
+}
+
 void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 {
 	child_signals();
@@ -60,6 +72,7 @@ void	child(t_cmd *cmd, int *prev_pipe_out, t_env **env_head, int *pipefd)
 		dup2_and_close(cmd->output_fd, STDOUT_FILENO, -1);
 	else if (cmd->next)
 		dup2_and_close(pipefd[1], STDOUT_FILENO, pipefd[0]);
+	close_all_nonstd_fd();
 	if (cmd->is_builtin > NON_BUILTIN)
 	{
 		run_builtin(cmd, env_head);

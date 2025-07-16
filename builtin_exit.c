@@ -105,14 +105,14 @@ int	exit_builtin(t_cmd *cmd)
 
 	if (!cmd->next && isatty(STDOUT_FILENO))
 		printf("exit\n");
-	if (!cmd->args[1] || !cmd->args[1][0])
+	if (!cmd->args[1] || !ft_strcmp(cmd->args[1], "--"))
 	{
 		g_signal = 1;
 		return (set_exit_status(0));
 	}
 	errno = 0;
 	value = ft_strtol(cmd->args[1], &endptr);
-	if (*endptr != '\0')
+	if (cmd->args[1][0] == '\0' || *endptr != '\0')
 		return (print_exit_error(cmd->args[1], EXIT_NON_NUM), 0);
 	if (cmd->args[2])
 		return (print_exit_error(cmd->args[1], EXIT_TOO_MANY)
