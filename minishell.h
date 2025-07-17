@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 13:23:31 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/27 16:12:09 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/07/17 13:43:41 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,5 +212,6 @@ t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands);
 int		is_n_flag(char *str);
 int		count_str_in_array(char **array);
 char	*remove_quotes_str(char *str);
+int		put_dollarsign(char *str, int fd, int start);
 
 #endif

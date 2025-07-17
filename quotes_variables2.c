@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:48:16 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/26 11:54:53 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/07/17 14:06:08 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,9 @@ int	put_variable(char *str, int fd, int i, t_env *env)
 	char	*value;
 
 	start = ++i;
-	if (str[start] == '\0' || str[start] == '"' || ft_isspace(str[start]))
-	{
-		ft_putchar_fd('$', fd);
-		while (str[start] && ft_isspace(str[start]))
-			ft_putchar_fd(str[start++], fd);
-		return (start);
-	}
+	if (!str[start] || str[start] == '"' || ft_isspace(str[start])
+		|| str[start] == '/')
+		return (put_dollarsign(str, fd, start));
 	if (str[start] == '?')
 	{
 		tmp = ft_itoa(get_exit_status());

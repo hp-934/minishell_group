@@ -6,7 +6,7 @@
 /*   By: yaepark <yaepark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 16:05:51 by hogu              #+#    #+#             */
-/*   Updated: 2025/06/19 18:20:20 by yaepark          ###   ########.fr       */
+/*   Updated: 2025/07/17 13:46:05 by yaepark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,12 @@ t_cmd	*remove_nul_strs_from_cmd_args(t_cmd **commands)
 		tmp = tmp->next;
 	}
 	return (*commands);
+}
+
+int	put_dollarsign(char *str, int fd, int start)
+{
+	ft_putchar_fd('$', fd);
+	while (str[start] && ft_isspace(str[start]))
+		ft_putchar_fd(str[start++], fd);
+	return (start);
 }
